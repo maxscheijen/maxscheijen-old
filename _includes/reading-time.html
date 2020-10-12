@@ -1,0 +1,19 @@
+{% if post.content %}
+
+{% assign words = post.content| strip_html | number_of_words %}
+  {% if words < 360 %}
+    1 min read
+  {% else %}
+    {{ words | divided_by: 250 }} min read
+  {% endif %}
+
+
+{% else %}
+{% assign words = content| strip_html | number_of_words %}
+  {% if words < 360 %}
+    1 min rea
+  {% else %}
+    {{ words | divided_by: 250 }} min read
+  {% endif %}
+
+{% endif %}

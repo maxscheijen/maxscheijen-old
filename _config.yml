@@ -1,0 +1,41 @@
+title: Max Scheijen
+author:
+  name: Max Scheijen
+  email: maxscheijen@gmail.com
+description: Data Science and Machine Learning
+show_excerpts: true
+paginate: false
+
+url: maxscheijen.github.io
+permalink: /:name
+
+minima:
+  date_format: "%b %-d, %Y"
+  social_links:
+    twitter: maxscheijen
+    github:  maxscheijen
+
+twitter:
+  username: maxscheijen
+  card: summary
+
+google_analytics: UA-154715114-1
+
+scholar:
+  style: custom
+  source: _bibliography
+  sort_by: author
+  bibliography_list_tag: p
+  bibliography_item_tag: p
+  bibtex_filters:
+    - latex
+    
+header_pages:
+- about.md
+
+theme: minima
+
+plugins:
+ - jekyll-feed
+ - jekyll-seo-tag
+ - jekyll-scholar

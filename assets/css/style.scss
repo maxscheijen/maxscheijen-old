@@ -1,0 +1,125 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+@import
+  "minima/skins/{{ site.minima.skin | default: 'classic' }}",
+  "minima/initialize";
+
+body {
+  font-size: 14px;
+  font-family: Helvetica, Arial, sans-serif;
+  color: #333 !important;
+}
+
+.site-title {
+  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+.post-list > li {
+  margin-bottom: 45px;
+}
+
+a {
+  color: #333 !important;
+}
+
+blockquote {
+  font-size: 13px;
+  font-style: italic;
+}
+
+// HEADER
+.site-header {
+  border: none;
+}
+
+// HEADINGS
+
+h1 {
+  font-size: 26px !important;
+}
+
+h2 {
+  font-size: 23px !important;
+  margin-top: 15px !important;
+}
+
+h3 {
+  font-size: 20px !important;
+  margin-top: 15px !important;
+  margin-bottom: 0px !important;
+}
+
+ul h3 {
+  margin-top: 0px !important;
+  color: #2a7ae2 !important;
+}
+
+h4 {
+  font-size: 16px !important;
+  margin-top: 15px !important;
+}
+
+.post-meta {
+  font-size: 11px;
+}
+
+.post-header {
+  margin-bottom: 15px;
+}
+
+article a {
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #2a7ae2 !important;
+  text-decoration: none;
+}
+
+.alert {
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #f6f6f6;
+}
+
+
+// TABLES
+table {
+  overflow: auto;
+  display: block;
+  border: none;
+}
+
+tr, td, th {
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 13px !important;
+  padding: 5px !important;
+
+}
+
+.about-item {
+  padding-top: 10px;
+}
+
+.svg-icon {
+  padding: 0px;
+  padding-right: 10px;
+}
+
+.vega-bind input {
+  width: 100% !important;
+}
+
+#categories {
+  float: right;
+}
+
+.post-list li {
+  border-bottom: grey !important;
+}
