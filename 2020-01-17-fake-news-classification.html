@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Fake news Classification with Logistic Regression | Max Scheijen</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Fake news Classification with Logistic Regression" />
+<meta name="author" content="Max Scheijen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!" />
+<meta property="og:description" content="With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!" />
+<link rel="canonical" href="maxscheijen.github.io/2020-01-17-fake-news-classification" />
+<meta property="og:url" content="maxscheijen.github.io/2020-01-17-fake-news-classification" />
+<meta property="og:site_name" content="Max Scheijen" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-17T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Fake news Classification with Logistic Regression" />
+<meta name="twitter:site" content="@maxscheijen" />
+<meta name="twitter:creator" content="@Max Scheijen" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-01-17-fake-news-classification","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-01-17-fake-news-classification"},"datePublished":"2020-01-17T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!","headline":"Fake news Classification with Logistic Regression","dateModified":"2020-01-17T00:00:00+01:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
+</head>
+<body>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+        }
+      });
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Max Scheijen</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a>
+            <a class="page-link" href="https://twitter.com/maxscheijen" target="_blank">Twitter</a>
+            <a class="page-link" href="https://github.com/maxscheijen" target="_blank">Github</a>
+            <a class="page-link" href="/feed.xml" target="_blank">Subscribe</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Fake news Classification with Logistic Regression</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2020-01-17T00:00:00+01:00" itemprop="datePublished">
+        Jan 17, 2020
+      </time>
+      <span>• 
+
+  
+    10 min read
+  
+
+</span>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Max Scheijen</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!</p>
+
+<p>In this blog post, we construct a simple logistic regression model to classify news articles to be fake or real. We’ll be using bag-of-words and tf-idf representations to vectorize our textual data.</p>
+
+<p>I try to recreate and improve the Bayesian model from  George McIntire detailed in <a href="https://opendatascience.com/how-to-build-a-fake-news-classification-model/">this</a> post with a logistic regression model.</p>
+
+<h2 id="1-load-data">1. Load Data</h2>
+
+<p>Let’s load news data and look at the first few rows. We’ll be using only the core text of the articles to train our classifier. This will keep our model simple. You could also use the title or the title in combination with the full text or other extracted features.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="p">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s">"ignore"</span><span class="p">)</span>
+
+<span class="n">news</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"https://s3.amazonaws.com/assets.datacamp.com/blog_assets/fake_or_real_news.csv"</span><span class="p">).</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+<span class="n">news</span> <span class="o">=</span> <span class="n">news</span><span class="p">[[</span><span class="s">"text"</span><span class="p">,</span> <span class="s">"label"</span><span class="p">]]</span>
+<span class="n">news</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Daniel Greenfield, a Shillman Journalism Fello...</td>
+      <td>FAKE</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Google Pinterest Digg Linkedin Reddit Stumbleu...</td>
+      <td>FAKE</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>U.S. Secretary of State John F. Kerry said Mon...</td>
+      <td>REAL</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>— Kaydee King (@KaydeeKing) November 9, 2016 T...</td>
+      <td>FAKE</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>It's primary day in New York and front-runners...</td>
+      <td>REAL</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>The data can be downloaded <a href="https://s3.amazonaws.com/assets.datacamp.com/blog_assets/fake_or_real_news.csv">here</a> and is provided by DataCamp.</p>
+
+<p>In the cell above I display the text column which contains the text of the article and the label columns. This las one holds information on whether or not the text is fake.</p>
+
+<h2 id="2-exploratory-data-analysis">2. Exploratory Data Analysis</h2>
+
+<p>Before modeling the data, let’s first take a look at the textual data! I would like to see if there is a simple difference between real and fake texts. There are several basic ways to look at our textual data. We could look at the number of words of our texts, the number of characters or the average length of words. Furthermore, it maybe could be useful to do part of speech (POS) tagging, do entity recognition or compute readability scores and identify differences between the text classes.</p>
+
+<p>Let’s start by printing the first sentence of a fake and real news article to see if these text parts give us clues about fake or realness. We do this by using a string method to split on a new line.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"FAKE ARTICLE: {} </span><span class="se">\n</span><span class="s">"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">news</span><span class="p">[</span><span class="s">"text"</span><span class="p">].</span><span class="nb">str</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"REAL ARTICLE: {}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">news</span><span class="p">[</span><span class="s">"text"</span><span class="p">].</span><span class="nb">str</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FAKE ARTICLE: Daniel Greenfield, a Shillman Journalism Fellow at the Freedom Center, is a New York writer focusing on radical Islam.  
+
+REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will stop <span class="k">in </span>Paris later this week, amid criticism that no top American officials attended Sunday’s unity march against terrorism.
+</code></pre></div></div>
+
+<p>I couldn’t really classify these articles to be real or fake, at least not based on their first sentences. Before diving deeper into the exploratory data analysis, let’s look at the distribution of our target labels.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="n">sns</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">style</span><span class="p">.</span><span class="n">use</span><span class="p">(</span><span class="s">'seaborn-whitegrid'</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="p">.</span><span class="n">set_style</span><span class="p">(</span><span class="s">'whitegrid'</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="p">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span><span class="s">"label"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">news</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="s">"Label count per target class"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_10_0.png" alt="png" /></p>
+
+<p>The figure above shows an even distribution of labels. There are as many fake as real news articles in our datasets. We set our baseline at around 50%. Anything above this score will be better than random guessing.</p>
+
+<h3 id="21-number-of-words">2.1 Number of words</h3>
+
+<p>Let’s see if there’s a difference between the number of words used in real articles compared to fake news texts. We first look at some simple summary statistics to get a feel for the data. We apply a lambda function that splits every word in the texts, stores it in a list and gets the length of the list. After that, we store word count back into a new column in our original data frame.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">news</span><span class="p">[</span><span class="s">"word_count"</span><span class="p">]</span> <span class="o">=</span> <span class="n">news</span><span class="p">[</span><span class="s">'text'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">split</span><span class="p">()))</span>
+<span class="n">news</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>label</th>
+      <th>word_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Daniel Greenfield, a Shillman Journalism Fello...</td>
+      <td>FAKE</td>
+      <td>1296</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Google Pinterest Digg Linkedin Reddit Stumbleu...</td>
+      <td>FAKE</td>
+      <td>446</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>U.S. Secretary of State John F. Kerry said Mon...</td>
+      <td>REAL</td>
+      <td>431</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>— Kaydee King (@KaydeeKing) November 9, 2016 T...</td>
+      <td>FAKE</td>
+      <td>404</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>It's primary day in New York and front-runners...</td>
+      <td>REAL</td>
+      <td>317</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>We can now compute several summary statistics on the word count grouped by there label. Let’s see if there are differences in word count between fake and real articles.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">news</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'label'</span><span class="p">)[</span><span class="s">'word_count'</span><span class="p">].</span><span class="n">describe</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>label</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>FAKE</th>
+      <td>3164.0</td>
+      <td>679.129267</td>
+      <td>958.962790</td>
+      <td>0.0</td>
+      <td>212.0</td>
+      <td>421.0</td>
+      <td>830.0</td>
+      <td>20891.0</td>
+    </tr>
+    <tr>
+      <th>REAL</th>
+      <td>3171.0</td>
+      <td>873.257647</td>
+      <td>722.483569</td>
+      <td>7.0</td>
+      <td>450.5</td>
+      <td>771.0</td>
+      <td>1123.0</td>
+      <td>7602.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>The output above suggests that real news articles have a greater average and median word count, with less variation (standard deviation and percentiles) than the fake news articles. The range of word count of fake news articles is far greater ranging from 0 to more than 20.000.</p>
+
+<p>Let’s look at the distribution of words and whether or not there is a difference in word count between real and fake news. I will use <code class="language-plaintext highlighter-rouge">seaborn</code>’s <code class="language-plaintext highlighter-rouge">FaceGrid</code> and <code class="language-plaintext highlighter-rouge">kdeplot</code> to display this distribution.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">FacetGrid</span><span class="p">(</span><span class="n">news</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s">"label"</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
+<span class="n">g</span><span class="p">.</span><span class="nb">map</span><span class="p">(</span><span class="n">sns</span><span class="p">.</span><span class="n">kdeplot</span><span class="p">,</span> <span class="s">"word_count"</span><span class="p">,</span> <span class="n">shade</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">g</span><span class="p">.</span><span class="n">fig</span><span class="p">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s">"Word count distribution for Real and Fake News"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">);</span>
+<span class="n">g</span><span class="p">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">""</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_17_0.png" alt="png" /></p>
+
+<p>The plot confirms  our summary statistics inferences. Real news articles seem to have a greater word count than fake news articles. We could do statistical tests to confirm this. Further exploration could look at the number of characters or number of sentences. We, however, are going to do this but look at readability.</p>
+
+<h3 id="22-readability">2.2 Readability</h3>
+
+<p>Are fake news articles easier to read real news articles? Let’s find out! We’ll use a readability score to quantify this. Readability tells us the ease with which the reader can understand a text. The readability depends on the contents of the texts. It measures the complexity of the vocabulary and syntax.</p>
+
+<p>We’ll use the <a href="https://en.wikipedia.org/wiki/Gunning_fog_index">Gunning fog index</a> to classify the readability of our news articles. This index takes into account two basic factors;</p>
+
+<ol>
+  <li>The greater the average sentence length the harder the text is to read.</li>
+  <li>The greater the percentage of complex words, the harder the text is to read.</li>
+</ol>
+
+<p>The formula returns a score corresponding to the grade in which someone would be able to read the text. The higher the index the harder the text is to read. I’ll use the <code class="language-plaintext highlighter-rouge">textstat</code> package to get the score of every text and store it in a new column.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">textstat</span>
+<span class="n">news</span><span class="p">[</span><span class="s">'gunning_fog_score'</span><span class="p">]</span> <span class="o">=</span> <span class="n">news</span><span class="p">[</span><span class="s">'text'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">textstat</span><span class="p">.</span><span class="n">gunning_fog</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">news</span><span class="p">[[</span><span class="s">'text'</span><span class="p">,</span><span class="s">'label'</span><span class="p">,</span> <span class="s">'gunning_fog_score'</span><span class="p">]].</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>label</th>
+      <th>gunning_fog_score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Daniel Greenfield, a Shillman Journalism Fello...</td>
+      <td>FAKE</td>
+      <td>12.30</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Google Pinterest Digg Linkedin Reddit Stumbleu...</td>
+      <td>FAKE</td>
+      <td>13.32</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>U.S. Secretary of State John F. Kerry said Mon...</td>
+      <td>REAL</td>
+      <td>20.21</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>— Kaydee King (@KaydeeKing) November 9, 2016 T...</td>
+      <td>FAKE</td>
+      <td>19.53</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>It's primary day in New York and front-runners...</td>
+      <td>REAL</td>
+      <td>16.35</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>Let’s group by the target label and see if there is a difference between the readability score for real and fake news articles. <em>I don’t know if textstat gives as the correct gunning fog score (the seem high), but we can use it for comparison.</em></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">news</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'label'</span><span class="p">)[</span><span class="s">'gunning_fog_score'</span><span class="p">].</span><span class="n">describe</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>label</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>FAKE</th>
+      <td>3164.0</td>
+      <td>20.785307</td>
+      <td>15.188323</td>
+      <td>0.0</td>
+      <td>13.3075</td>
+      <td>17.27</td>
+      <td>23.595</td>
+      <td>325.13</td>
+    </tr>
+    <tr>
+      <th>REAL</th>
+      <td>3171.0</td>
+      <td>23.458212</td>
+      <td>14.673496</td>
+      <td>3.6</td>
+      <td>16.1600</td>
+      <td>20.67</td>
+      <td>26.950</td>
+      <td>440.66</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>The summary statistics of the Gunning fog index suggest that real texts are somewhat harder to read. They also have less variation in their readability score. Which if we think about it makes some intuitive sense. If we plot the distribution of scores we also see this difference.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">FacetGrid</span><span class="p">(</span><span class="n">news</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s">"label"</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
+<span class="n">g</span><span class="p">.</span><span class="nb">map</span><span class="p">(</span><span class="n">sns</span><span class="p">.</span><span class="n">kdeplot</span><span class="p">,</span> <span class="s">"gunning_fog_score"</span><span class="p">,</span> <span class="n">shade</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">g</span><span class="p">.</span><span class="n">fig</span><span class="p">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s">"Gunning Fog Score score distribution for Real and Fake News"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">);</span>
+<span class="n">g</span><span class="p">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">""</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_24_0.png" alt="png" /></p>
+
+<h2 id="3-train-and-validation---first-model">3. Train and Validation  &amp; First Model</h2>
+
+<p>Before we go and model the data we split the data into a train and validation set. We create a validation dataset to validate our classifier. We’ll use 75% of the data for training the logistic and 25% for validating our model. We’ll only use the text of the article, not the title, word count or readability score. Furthermore, we use stratification to ensure that we have even distribution of target label classes in the train and validation data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">target</span> <span class="o">=</span> <span class="n">news</span><span class="p">.</span><span class="n">label</span><span class="p">.</span><span class="n">values</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">news</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+
+<span class="s">f"Train shape = </span><span class="si">{</span><span class="n">X_train</span><span class="p">.</span><span class="n">shape</span><span class="si">}</span><span class="s"> Test shape = </span><span class="si">{</span><span class="n">X_valid</span><span class="p">.</span><span class="n">shape</span><span class="si">}</span><span class="s">"</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'Train shape = (4751, 4) Test shape = (1584, 4)'</span>
+</code></pre></div></div>
+
+<p>Let’s use a train a logistic regression classifier. We use stratified cross validation to validate our model.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">StratifiedKFold</span><span class="p">,</span> <span class="n">cross_val_score</span>
+
+<span class="n">logreg</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span> <span class="n">X_train</span><span class="p">[[</span><span class="s">'word_count'</span><span class="p">,</span> <span class="s">'gunning_fog_score'</span><span class="p">]],</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">)</span>
+<span class="n">cv</span><span class="p">.</span><span class="n">mean</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.61734409553295
+</code></pre></div></div>
+
+<h2 id="4-feature-extraction-and-modeling-the-data">4. Feature Extraction and Modeling the Data</h2>
+
+<p>These simple statistics do not seem to really help us classify fake news. Accuracy is higher than random but I think we can do better. We need to find another way to represent text that does allow a model to make better classifications.</p>
+
+<h3 id="41-bag-of-words-model">4.1 Bag-of-words model</h3>
+
+<p>We will start by building a  bag-of-words model. A bag of words model is a simple way to represent text. In a bag-of-words model, we extract word tokens from the text and compute the word frequency of these tokens. Based on these frequencies and our corpus vocabulary we build word vector.  The frequency of occurrence of each word in a text is a feature we train our classifier on.</p>
+
+<p>Simply put, every row represents a text/article from the dataset, every column represents a term (word) of the dataset, and every cell contains the frequency count of that word in a particular text.</p>
+
+<p>We can construct a bag of word model with  <code class="language-plaintext highlighter-rouge">CountVectorizer</code> from <code class="language-plaintext highlighter-rouge">sklearn</code>.  We fit the CountVecotrizer on the training data. After that, we transform the train and validation data. This will create a sparse matrix that we can transform into a dense matrix using the to  <code class="language-plaintext highlighter-rouge">toarray</code> function.</p>
+
+<p>We also don’t take stop words into account, because they often do not provide useful information.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">CountVectorizer</span>
+
+<span class="n">count_vector</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">analyzer</span><span class="o">=</span><span class="s">'word'</span><span class="p">,</span> <span class="n">stop_words</span><span class="o">=</span><span class="s">'english'</span><span class="p">)</span>
+
+<span class="n">count_vector_train</span> <span class="o">=</span> <span class="n">count_vector</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="s">'text'</span><span class="p">])</span>
+<span class="n">count_vector_valid</span> <span class="o">=</span> <span class="n">count_vector</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_valid</span><span class="p">[</span><span class="s">'text'</span><span class="p">])</span>
+
+<span class="n">count_vector_train</span><span class="p">.</span><span class="n">toarray</span><span class="p">().</span><span class="n">shape</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>4751, 60245<span class="o">)</span>
+</code></pre></div></div>
+
+<p>We can see that based on training data this vector has 60245 features. Let’s look at these features by using <code class="language-plaintext highlighter-rouge">get_feature_names</code> on the bag-of-words vectorizer.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bow_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">count_vector_train</span><span class="p">.</span><span class="n">toarray</span><span class="p">(),</span> 
+            <span class="n">columns</span><span class="o">=</span> <span class="n">count_vector</span><span class="p">.</span><span class="n">get_feature_names</span><span class="p">())</span>
+<span class="n">bow_df</span><span class="p">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">4595</span><span class="p">:</span><span class="mi">4600</span><span class="p">].</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>arguably</th>
+      <th>argue</th>
+      <th>argued</th>
+      <th>argues</th>
+      <th>arguing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>We can see that the word “argued” occurs 1 time in the first document of our training data.</p>
+
+<p>We’ll use this bag-of-words model to train our logistic regression.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logreg</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span> <span class="n">count_vector_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">)</span>
+<span class="n">cv</span><span class="p">.</span><span class="n">mean</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.9155939849624062
+</code></pre></div></div>
+
+<p>The logistic regression algorithm performs much better on this basic bag-of-words model with a cross-validation score of 91,55%.</p>
+
+<h3 id="42-term-frequency-and-inverse-data-frequency-tf-idf">4.2 Term Frequency and Inverse Data Frequency (tf-idf)</h3>
+
+<p>Another way to represent text is by using term frequency-inverse data frequency (tf-idf). This way of representing text quantifies how relative importance a word is to a text and in our dataset.</p>
+
+\[w_{i,j} = tf_{i,j} \times \log(\frac{N}{df_i})\]
+
+<p>The first component (tf) calculates the word frequency $tf_{i,j}$ by counting how many times the word appears in a document $n_{i,j}$ compared to all the words in the document $\sum_kn_{i,j}$.</p>
+
+\[tf_{i,j} = \frac{n_{i,j}}{\sum_kn_{i,j}}\]
+
+<p>The second component (idf) can be calculated as the logarithm of the number of texts in the dataset, divided by the total number of texts where the specific word appears. This gives weight to every word. Rare words get a high idf score, the more common words a low score.</p>
+
+\[idf(w) = \log(\frac{N}{df_t})\]
+
+<p>tf-idf basically measures of original a word.</p>
+
+<p>We can use <code class="language-plaintext highlighter-rouge">TfidfVectorizer</code> to create a tf-idf representation of our news articles by fitting and transforming the data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+
+<span class="n">tfidf_vector</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">analyzer</span><span class="o">=</span><span class="s">"word"</span><span class="p">,</span> <span class="n">stop_words</span><span class="o">=</span><span class="s">'english'</span><span class="p">)</span>
+
+<span class="n">tfidf_train</span> <span class="o">=</span> <span class="n">tfidf_vector</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="s">'text'</span><span class="p">])</span>
+<span class="n">tfidf_valid</span> <span class="o">=</span> <span class="n">tfidf_vector</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_valid</span><span class="p">[</span><span class="s">'text'</span><span class="p">])</span>
+
+<span class="n">tfidf_train</span><span class="p">.</span><span class="n">toarray</span><span class="p">().</span><span class="n">shape</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>4751, 60245<span class="o">)</span>
+</code></pre></div></div>
+
+<p>Let’s also extract the feature names and look at their corresponding weights.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tfidf_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">tfidf_train</span><span class="p">.</span><span class="n">toarray</span><span class="p">(),</span>
+            <span class="n">columns</span><span class="o">=</span> <span class="n">tfidf_vector</span><span class="p">.</span><span class="n">get_feature_names</span><span class="p">())</span>
+<span class="n">tfidf_df</span><span class="p">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">4595</span><span class="p">:</span><span class="mi">4600</span><span class="p">].</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>arguably</th>
+      <th>argue</th>
+      <th>argued</th>
+      <th>argues</th>
+      <th>arguing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.030122</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>We can see that now there are weights assigned to the features per document.</p>
+
+<p>Let’s use the same logistic regression algorithm on the tf-idf representation as on the bag-of-words model.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logreg</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span> <span class="n">tfidf_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">)</span>
+<span class="n">cv</span><span class="p">.</span><span class="n">mean</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.9103321539141973
+</code></pre></div></div>
+
+<p>When using tf-idf representation the logistic regression model has an accuracy of 91,03 %. This is a little less than the bag-of-words model.</p>
+
+<h3 id="43-text-processing">4.3 Text processing</h3>
+
+<p>Both the bag-of-words and the tf-idf model have a lot of features (60,000). Let’s look at ways make to turn down the number of features.</p>
+
+<p>Let’s apply <a href="https://en.wikipedia.org/wiki/Lemmatisatio">lemmatization</a>. This process converts words into there base form. We perform lemmatization by using <code class="language-plaintext highlighter-rouge">nltk</code>’s lemmatization functionality.</p>
+
+<p>First, we define a <code class="language-plaintext highlighter-rouge">WordNetLemmatizer</code>. Then we define a lambda function that takes a string, loops over the words of the string (text), stores them in a list. Lastly, words are joined back together into a string.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">nltk.stem</span> <span class="kn">import</span> <span class="n">WordNetLemmatizer</span>
+
+<span class="n">lemma</span> <span class="o">=</span> <span class="n">WordNetLemmatizer</span><span class="p">()</span>
+
+<span class="n">X_train_lemma</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="s">'text'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">' '</span><span class="p">.</span><span class="n">join</span><span class="p">([</span><span class="n">lemma</span><span class="p">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">x</span><span class="p">.</span><span class="n">strip</span><span class="p">().</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)]))</span>
+<span class="n">X_valid_lemma</span> <span class="o">=</span> <span class="n">X_valid</span><span class="p">[</span><span class="s">'text'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">' '</span><span class="p">.</span><span class="n">join</span><span class="p">([</span><span class="n">lemma</span><span class="p">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">x</span><span class="p">.</span><span class="n">strip</span><span class="p">().</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)]))</span>
+</code></pre></div></div>
+
+<p>Let’s look at the dimensions of our bag-of-words model after applying lemmatization.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cv_lemma_train</span> <span class="o">=</span> <span class="n">count_vector</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train_lemma</span><span class="p">)</span>
+<span class="n">cv_lemma_valid</span> <span class="o">=</span> <span class="n">count_vector</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train_lemma</span><span class="p">)</span>
+
+<span class="n">cv_lemma_train</span><span class="p">.</span><span class="n">toarray</span><span class="p">().</span><span class="n">shape</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>4751, 58849<span class="o">)</span>
+</code></pre></div></div>
+
+<p>We can see we lost about 2,000 features using lemmatization and removing stop words.</p>
+
+<p>Let’s compare some models that we fit on the bag of words representation with lemmatization applied.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logreg</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span> <span class="n">cv_lemma_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">)</span>
+<span class="n">cv</span><span class="p">.</span><span class="n">mean</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.9160141530296328
+</code></pre></div></div>
+
+<p>We can see that we achieve a train accuracy score of validation score of 91.60% of the logistic regression. This model also has the lowest variance. But can we use other text representations to achieve better accuracy scores? Let’s look at tf-idf with lemmatization applied.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tfidf_lemma_train</span> <span class="o">=</span> <span class="n">tfidf_vector</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train_lemma</span><span class="p">)</span>
+<span class="n">tfidf_lemma_valid</span> <span class="o">=</span> <span class="n">tfidf_vector</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_valid_lemma</span><span class="p">)</span>
+
+<span class="n">logreg</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span> <span class="n">tfidf_lemma_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">)</span>
+<span class="n">cv</span><span class="p">.</span><span class="n">mean</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.9115944272445822
+</code></pre></div></div>
+
+<p>The tf-idf model also improved slightly. Overall lemmatization decreased the number of features of our data without decreasing the accuracy of our classifier.</p>
+
+<p>We can also combine several representations. We can create a tf-idf representation of the characters in the articles and combine them with the tf-idf word representation. Let’s first create the character model. To keep the number of features smaller we set the max_features to 60000.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tfidf_char</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">analyzer</span><span class="o">=</span><span class="s">'char'</span><span class="p">,</span> <span class="n">strip_accents</span><span class="o">=</span><span class="s">'unicode'</span><span class="p">,</span>
+                             <span class="n">stop_words</span><span class="o">=</span><span class="s">'english'</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+                             <span class="n">max_features</span><span class="o">=</span><span class="mi">60000</span><span class="p">)</span>
+
+<span class="n">tfidf_train_char</span> <span class="o">=</span> <span class="n">tfidf_char</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train_lemma</span><span class="p">)</span>
+<span class="n">tfidf_valid_char</span> <span class="o">=</span> <span class="n">tfidf_char</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_valid_lemma</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We use the <code class="language-plaintext highlighter-rouge">hstack()</code> function from SciPy to horizontally stack the sparse word and character matrices.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">hstack</span>
+<span class="n">train_features</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">([</span><span class="n">tfidf_lemma_train</span><span class="p">,</span> <span class="n">tfidf_train_char</span><span class="p">])</span>
+<span class="n">valid_features</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">([</span><span class="n">tfidf_lemma_valid</span><span class="p">,</span> <span class="n">tfidf_valid_char</span><span class="p">])</span>
+</code></pre></div></div>
+
+<h2 id="5-final-model">5. Final model</h2>
+
+<p>We train our final logistic regression classifier on the features that combine the words and character tf-idf - representations</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logreg</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span> <span class="n">train_features</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">)</span>
+<span class="n">cv</span><span class="p">.</span><span class="n">mean</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.9318018575851392
+</code></pre></div></div>
+
+<p>We get an accuracy score of around <strong>93.18%</strong> on the validation set!</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logreg</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_features</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">logreg</span><span class="p">.</span><span class="n">score</span><span class="p">(</span><span class="n">valid_features</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    0.9343434343434344
+</code></pre></div></div>
+
+<p>The final testing score is 93.34% on the testing.</p>
+
+<h3 id="6-conclusion">6. Conclusion</h3>
+
+<p>We used a logistic regression model to classify real and fake news articles. We used a bag-of-words and a tf-idf model to represent the article’s texts.</p>
+
+<p>This is a really simple way to classify articles, with good results. You could also use word embeddings, topic models and many more ways to represent text.</p>
+
+<p>Furthermore, you could also other classifier models, like Naive Bayes classifiers, Support Vector Machines and (Deep) Neural Nets.</p>
+
+<p>I also did not do any hyper parameter tuning to find the best model.</p>
+
+  </div><a class="u-url" href="/2020-01-17-fake-news-classification" hidden></a>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+    </div>
+  </div>
+
+</footer></body>
+
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Quick and Dirty Machine Learning: Modeling Earthquake Damage | Max Scheijen</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Quick and Dirty Machine Learning: Modeling Earthquake Damage" />
+<meta name="author" content="Max Scheijen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In this post, I would like to demonstrate a quick way to create a good performing machine learning model. It is often encouraging to get a good performing model fast, without major pre-processing and featuring engineering. After this, we can use model selection, hyper-parameter tweaking, and feature engineering to squeeze out a little more predictive performance. However, it is really encouraging to get a well-performing fast." />
+<meta property="og:description" content="In this post, I would like to demonstrate a quick way to create a good performing machine learning model. It is often encouraging to get a good performing model fast, without major pre-processing and featuring engineering. After this, we can use model selection, hyper-parameter tweaking, and feature engineering to squeeze out a little more predictive performance. However, it is really encouraging to get a well-performing fast." />
+<link rel="canonical" href="maxscheijen.github.io/2020-03-18-quick-and-dirty-machine-learning" />
+<meta property="og:url" content="maxscheijen.github.io/2020-03-18-quick-and-dirty-machine-learning" />
+<meta property="og:site_name" content="Max Scheijen" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-18T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Quick and Dirty Machine Learning: Modeling Earthquake Damage" />
+<meta name="twitter:site" content="@maxscheijen" />
+<meta name="twitter:creator" content="@Max Scheijen" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-03-18-quick-and-dirty-machine-learning","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-03-18-quick-and-dirty-machine-learning"},"datePublished":"2020-03-18T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"In this post, I would like to demonstrate a quick way to create a good performing machine learning model. It is often encouraging to get a good performing model fast, without major pre-processing and featuring engineering. After this, we can use model selection, hyper-parameter tweaking, and feature engineering to squeeze out a little more predictive performance. However, it is really encouraging to get a well-performing fast.","headline":"Quick and Dirty Machine Learning: Modeling Earthquake Damage","dateModified":"2020-03-18T00:00:00+01:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
+</head>
+<body>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+        }
+      });
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Max Scheijen</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a>
+            <a class="page-link" href="https://twitter.com/maxscheijen" target="_blank">Twitter</a>
+            <a class="page-link" href="https://github.com/maxscheijen" target="_blank">Github</a>
+            <a class="page-link" href="/feed.xml" target="_blank">Subscribe</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Quick and Dirty Machine Learning: Modeling Earthquake Damage</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2020-03-18T00:00:00+01:00" itemprop="datePublished">
+        Mar 18, 2020
+      </time>
+      <span>• 
+
+  
+    5 min read
+  
+
+</span>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Max Scheijen</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>In this post, I would like to demonstrate a quick way to create a good performing machine learning model. It is often encouraging to get a good performing model fast, without major pre-processing and featuring engineering. After this, we can use model selection, hyper-parameter tweaking, and feature engineering to squeeze out a little more predictive performance. However, it is really encouraging to get a well-performing fast.</p>
+
+<p>So let’s get started! I will be using data from a Data Science competition to asses the model’s performance. The contest is called <a href="https://www.drivendata.org/competitions/57/nepal-earthquake/">“Richter’s Predictor: Modeling Earthquake Damage”</a> hosted by <a href="https://www.drivendata.org/" target="_blank">DrivenData</a>. The goal is to predict the damage to buildings caused by an earthquake. The amount of damage is divided into 3 categories:  (1) low, (2) medium, (3) almost complete destruction.</p>
+
+<p>In the cell below, we load the train values, train labels, test values, and the sample submission file and display the first couple of rows.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">warnings</span><span class="p">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s">'ignore'</span><span class="p">)</span>
+<span class="n">pd</span><span class="p">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">'display.max_columns'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">train_labels</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"data/train_labels.csv"</span><span class="p">).</span><span class="n">drop</span><span class="p">(</span><span class="s">'building_id'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">train_values</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"data/train_values.csv"</span><span class="p">).</span><span class="n">drop</span><span class="p">(</span><span class="s">'building_id'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">test_values</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"data/test.csv"</span><span class="p">).</span><span class="n">drop</span><span class="p">(</span><span class="s">'building_id'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">sample_sub</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"data/submission_format.csv"</span><span class="p">)</span>
+
+<span class="n">train_values</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geo_level_1_id</th>
+      <th>geo_level_2_id</th>
+      <th>geo_level_3_id</th>
+      <th>count_floors_pre_eq</th>
+      <th>age</th>
+      <th>area_percentage</th>
+      <th>height_percentage</th>
+      <th>land_surface_condition</th>
+      <th>foundation_type</th>
+      <th>roof_type</th>
+      <th>ground_floor_type</th>
+      <th>other_floor_type</th>
+      <th>position</th>
+      <th>plan_configuration</th>
+      <th>has_superstructure_adobe_mud</th>
+      <th>has_superstructure_mud_mortar_stone</th>
+      <th>has_superstructure_stone_flag</th>
+      <th>has_superstructure_cement_mortar_stone</th>
+      <th>has_superstructure_mud_mortar_brick</th>
+      <th>has_superstructure_cement_mortar_brick</th>
+      <th>has_superstructure_timber</th>
+      <th>has_superstructure_bamboo</th>
+      <th>has_superstructure_rc_non_engineered</th>
+      <th>has_superstructure_rc_engineered</th>
+      <th>has_superstructure_other</th>
+      <th>legal_ownership_status</th>
+      <th>count_families</th>
+      <th>has_secondary_use</th>
+      <th>has_secondary_use_agriculture</th>
+      <th>has_secondary_use_hotel</th>
+      <th>has_secondary_use_rental</th>
+      <th>has_secondary_use_institution</th>
+      <th>has_secondary_use_school</th>
+      <th>has_secondary_use_industry</th>
+      <th>has_secondary_use_health_post</th>
+      <th>has_secondary_use_gov_office</th>
+      <th>has_secondary_use_use_police</th>
+      <th>has_secondary_use_other</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>6</td>
+      <td>487</td>
+      <td>12198</td>
+      <td>2</td>
+      <td>30</td>
+      <td>6</td>
+      <td>5</td>
+      <td>t</td>
+      <td>r</td>
+      <td>n</td>
+      <td>f</td>
+      <td>q</td>
+      <td>t</td>
+      <td>d</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>v</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8</td>
+      <td>900</td>
+      <td>2812</td>
+      <td>2</td>
+      <td>10</td>
+      <td>8</td>
+      <td>7</td>
+      <td>o</td>
+      <td>r</td>
+      <td>n</td>
+      <td>x</td>
+      <td>q</td>
+      <td>s</td>
+      <td>d</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>v</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="distribution-of-classes">Distribution of classes</h2>
+
+<p>One of the first things you should when dealing with classification is to look at the distribution of classes. For this, I use pandas value_count capabilities to get the frequency distribution of the target labels. Not all target categories are equally present.</p>
+
+<p>Label 2 is the majority class, with 56% of the observations. This percentage will be our baseline score. We need to outperform this score for our model to add something valuable. Otherwise, we would be better of always predicting label 2.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">train_labels</span><span class="p">.</span><span class="n">damage_grade</span><span class="p">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">).</span><span class="n">sort_index</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    0.096408
+2    0.568912
+3    0.334680
+Name: damage_grade, dtype: float64
+</code></pre></div></div>
+
+<h2 id="preprocessing">Preprocessing</h2>
+
+<p>The only preprocessing we’ll do is to get the data ready for the machine learning algorithm.</p>
+
+<h3 id="missing-data">Missing data</h3>
+
+<p>Often machine learning models don’t allow for missing values in our data. We should identify these values and treat them. In our specific case, we are lucky because we don’t have any missing values. However, if we would encounter them, these values need to be replaced.</p>
+
+<p>A good starting point is replacing missing numerical values with the mean or median, and replacing missing categorical values with the most frequent (mode) value. Note that your method of imputing missing values can have an impact on the performance of your model.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">train_values</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">sum</span><span class="p">().</span><span class="nb">sum</span><span class="p">(),</span> <span class="n">test_values</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">sum</span><span class="p">().</span><span class="nb">sum</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(0, 0)
+</code></pre></div></div>
+
+<h3 id="categorical-features">Categorical features</h3>
+
+<p>Most of the time, machine learning models also don’t allow for categorical variables. We need to identify these features and encode them. One important note is that there should be consistency between the numerical representation of these values in the features in the train and test set.</p>
+
+<p>This can be achieved by first concatenating the test data at the end of the train data. Secondly, we encode the categorical features, after which we split the data back into a train and test set. We now have a constant representation of these variables between our train and test set.</p>
+
+<p>Label encoding is a good starting point. This method encodes features with a value between 0 and n_classes-1. This technique works best with ordinal features because it implies ordering. However, because this post is about getting a quick model done, we apply it to all categorical features. We use some assert statements to test if the shape of the original train and test set are the same as the encoded ones.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
+
+<span class="n">all_data</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">concat</span><span class="p">([</span><span class="n">train_values</span><span class="p">,</span> <span class="n">test_values</span><span class="p">])</span>
+<span class="n">categorical_features</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s">'object'</span><span class="p">).</span><span class="n">columns</span>
+
+<span class="n">label_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="n">all_data</span><span class="p">[</span><span class="n">categorical_features</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[</span><span class="n">categorical_features</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="n">label_encoder</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">)</span>
+
+<span class="n">train_enc</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">train_values</span><span class="p">)]</span>
+<span class="n">test_enc</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">train_values</span><span class="p">):]</span>
+
+<span class="k">assert</span> <span class="n">train_enc</span><span class="p">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">train_values</span><span class="p">.</span><span class="n">shape</span> 
+<span class="k">assert</span> <span class="n">test_enc</span><span class="p">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">test_values</span><span class="p">.</span><span class="n">shape</span>
+
+<span class="n">train_enc</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geo_level_1_id</th>
+      <th>geo_level_2_id</th>
+      <th>geo_level_3_id</th>
+      <th>count_floors_pre_eq</th>
+      <th>age</th>
+      <th>area_percentage</th>
+      <th>height_percentage</th>
+      <th>land_surface_condition</th>
+      <th>foundation_type</th>
+      <th>roof_type</th>
+      <th>ground_floor_type</th>
+      <th>other_floor_type</th>
+      <th>position</th>
+      <th>plan_configuration</th>
+      <th>has_superstructure_adobe_mud</th>
+      <th>has_superstructure_mud_mortar_stone</th>
+      <th>has_superstructure_stone_flag</th>
+      <th>has_superstructure_cement_mortar_stone</th>
+      <th>has_superstructure_mud_mortar_brick</th>
+      <th>has_superstructure_cement_mortar_brick</th>
+      <th>has_superstructure_timber</th>
+      <th>has_superstructure_bamboo</th>
+      <th>has_superstructure_rc_non_engineered</th>
+      <th>has_superstructure_rc_engineered</th>
+      <th>has_superstructure_other</th>
+      <th>legal_ownership_status</th>
+      <th>count_families</th>
+      <th>has_secondary_use</th>
+      <th>has_secondary_use_agriculture</th>
+      <th>has_secondary_use_hotel</th>
+      <th>has_secondary_use_rental</th>
+      <th>has_secondary_use_institution</th>
+      <th>has_secondary_use_school</th>
+      <th>has_secondary_use_industry</th>
+      <th>has_secondary_use_health_post</th>
+      <th>has_secondary_use_gov_office</th>
+      <th>has_secondary_use_use_police</th>
+      <th>has_secondary_use_other</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>6</td>
+      <td>487</td>
+      <td>12198</td>
+      <td>2</td>
+      <td>30</td>
+      <td>6</td>
+      <td>5</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8</td>
+      <td>900</td>
+      <td>2812</td>
+      <td>2</td>
+      <td>10</td>
+      <td>8</td>
+      <td>7</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0</td>
+      <td>3</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>21</td>
+      <td>363</td>
+      <td>8973</td>
+      <td>2</td>
+      <td>10</td>
+      <td>5</td>
+      <td>5</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3</td>
+      <td>3</td>
+      <td>2</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="cross-validation">Cross-validation</h2>
+
+<p>Before training our model, we should create a validation dataset. This lets us internally test our model, before predicting the test data. We’re dealing with a classification problem, with an uneven class distribution. Therefore we should us stratification when splitting our data into a train and validation sets. This ensures that we have the same class distribution in our train and validation set.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">train_enc</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">train_labels</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="modeling-the-data">Modeling the Data</h2>
+
+<p>Now that this is all done, we can start training our machine learning model. We use a LightGBM, which is a gradient boosting framework that uses tree-based learning algorithms. According to the developers, it is designed to be distributed and efficient with the following advantages:</p>
+
+<ul>
+  <li>Faster training speed and higher efficiency.</li>
+  <li>Lower memory usage.</li>
+  <li>Better accuracy.</li>
+  <li>Support for parallel and GPU learning.</li>
+  <li>Capable of handling large-scale data.</li>
+</ul>
+
+<p>A basic LightGBM model can be trained in the same way as you fit a scikit-learn machine learning model. We start with 200 estimators, max depth of 50 with 900 leaves. This model only takes about a minute to train.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">time</span>
+<span class="kn">import</span> <span class="nn">lightgbm</span> <span class="k">as</span> <span class="n">lgb</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">lgb</span><span class="p">.</span><span class="n">LGBMClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">num_leaves</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_valid</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CPU times: user 3min 7s, sys: 2.76 s, total: 3min 10s
+Wall time: 51.2 s
+</code></pre></div></div>
+
+<h2 id="evaluating-the-model">Evaluating the model</h2>
+
+<p>To evaluate the performance of our model, we use the <strong>micro averaged f1 score</strong>, the same as in the contest. Our model gives us an f1-micro averaged score of <strong>0.7422</strong>, which is quite good. Especially when you keep in mind that we did so little processing and feature engineering.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span>
+
+<span class="n">score_model</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_valid</span><span class="p">,</span> <span class="n">preds</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s">'micro'</span><span class="p">)</span>
+<span class="nb">round</span><span class="p">(</span><span class="n">score_model</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.7422
+</code></pre></div></div>
+
+<p>The model does outperform the naive majority class which gets a micro f1-score of <strong>0.5689</strong>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">naive_pred</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">y_valid</span><span class="p">)))</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="n">score_naive</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_valid</span><span class="p">,</span> <span class="n">naive_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s">'micro'</span><span class="p">)</span>
+<span class="nb">round</span><span class="p">(</span><span class="n">score_naive</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.5689
+</code></pre></div></div>
+
+<h2 id="training-the-full-model-and-predicting-on-test-data">Training the full model and predicting on test data</h2>
+
+<p>We can now train on the full dataset, which also lets us train on the validation set. After this, we can make predictions on the test dataset.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">time</span>
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">test_preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_enc</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CPU times: user 3min 45s, sys: 3.1 s, total: 3min 48s
+Wall time: 1min 1s
+</code></pre></div></div>
+
+<p>We store the test dataset predictions in the damage_grade columns of the sample submission file and save it as a CSV.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sample_sub</span><span class="p">[</span><span class="s">'damage_grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_preds</span>
+<span class="n">sample_sub</span><span class="p">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s">"prediction.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>After submitting to the competition, we a score of <strong>0.7446</strong>. As of 2020-03-18, this ranks us in the top <strong>6-7%</strong> of the leaderboard. This post demonstrated that we can achieve quite good performing models with almost no preprocessing, by leveraging the power of the LightGBM machine learning framework.</p>
+
+  </div><a class="u-url" href="/2020-03-18-quick-and-dirty-machine-learning" hidden></a>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+    </div>
+  </div>
+
+</footer></body>
+
+</html>

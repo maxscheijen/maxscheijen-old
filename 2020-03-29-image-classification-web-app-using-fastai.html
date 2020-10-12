@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Image Classifcation Web App using Flask and fastai | Max Scheijen</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Image Classifcation Web App using Flask and fastai" />
+<meta name="author" content="Max Scheijen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="One of the things I find really difficult when finishing a Data Science or Machine Learning project is that I don’t really have a feeling of completeness. We have a great performing model, but what to do now? We can make interacting with our trained model more enjoyable. Therefore, today we are going to build a really simple web app to deploy a trained deep learning image classifier. This application allows the user to submit their own image and get a classification label back." />
+<meta property="og:description" content="One of the things I find really difficult when finishing a Data Science or Machine Learning project is that I don’t really have a feeling of completeness. We have a great performing model, but what to do now? We can make interacting with our trained model more enjoyable. Therefore, today we are going to build a really simple web app to deploy a trained deep learning image classifier. This application allows the user to submit their own image and get a classification label back." />
+<link rel="canonical" href="maxscheijen.github.io/2020-03-29-image-classification-web-app-using-fastai" />
+<meta property="og:url" content="maxscheijen.github.io/2020-03-29-image-classification-web-app-using-fastai" />
+<meta property="og:site_name" content="Max Scheijen" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-29T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Image Classifcation Web App using Flask and fastai" />
+<meta name="twitter:site" content="@maxscheijen" />
+<meta name="twitter:creator" content="@Max Scheijen" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-03-29-image-classification-web-app-using-fastai","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-03-29-image-classification-web-app-using-fastai"},"datePublished":"2020-03-29T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"One of the things I find really difficult when finishing a Data Science or Machine Learning project is that I don’t really have a feeling of completeness. We have a great performing model, but what to do now? We can make interacting with our trained model more enjoyable. Therefore, today we are going to build a really simple web app to deploy a trained deep learning image classifier. This application allows the user to submit their own image and get a classification label back.","headline":"Image Classifcation Web App using Flask and fastai","dateModified":"2020-03-29T00:00:00+01:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
+</head>
+<body>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+        }
+      });
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Max Scheijen</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a>
+            <a class="page-link" href="https://twitter.com/maxscheijen" target="_blank">Twitter</a>
+            <a class="page-link" href="https://github.com/maxscheijen" target="_blank">Github</a>
+            <a class="page-link" href="/feed.xml" target="_blank">Subscribe</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Image Classifcation Web App  using Flask and fastai</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2020-03-29T00:00:00+01:00" itemprop="datePublished">
+        Mar 29, 2020
+      </time>
+      <span>• 
+
+  
+    8 min read
+  
+
+</span>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Max Scheijen</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>One of the things I find really difficult when finishing a Data Science or Machine Learning project is that I don’t really have a feeling of completeness. We have a great performing model, but what to do now? We can make interacting with our trained model more enjoyable. Therefore, today we are going to build a really simple web app to deploy a trained deep learning image classifier. This application allows the user to submit their own image and get a classification label back.</p>
+
+<p>In our particular case, we build a web application that can classify an image of a fashion item into one of the 100+ clothing categories! We’ll build and train a Convolutional Neural Network (CNN) using <a href="https://www.fast.ai" target="_blank">fastai</a> to recognize fashion items on images. After training our model, we build a super simple web application using Flask to make inferences/predictions on our own images.</p>
+
+<p>To train our fashion item classifier we need alot of images of clothing items. The <a href="https://www.kaggle.com/paramaggarwal/fashion-product-images-small" target="_blank">Fashion Product Images (Small)</a> dataset on <a href="https://www.kaggle.com" target="_blank">Kaggle</a> provides enough images to train a descent image classifier.</p>
+
+<p>After some CSS styling, the final web app looks something like this:</p>
+
+<p>The web app looks like this:</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_app.png" alt="png" /></p>
+
+<h2 id="image-classification-model">Image Classification Model</h2>
+
+<p>I use the <a href="https://docs.fast.ai" target="_blank">fastai</a> framework to train an image classifier. This framework provides a really easy and intuitive way for training state of the art deep learning models. Founder, <a href="https://twitter.com/jeremyphoward" target="_blank">Jeremy Howard</a>, teaches an excellent <a href="https://course.fast.ai/" target="_blank">course</a> in deep learning for free using the fastai framework. I can’t recommend this course enough!</p>
+
+<p>Let’s get started!</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="kn">from</span> <span class="nn">fastai</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="kn">import</span> <span class="o">*</span>
+</code></pre></div></div>
+
+<h3 id="loading-the-data">Loading the data</h3>
+
+<p>First, we need to provide a path to the folder containing the images. I’ve put the image folder in the same folder as my notebook. We use <code class="language-plaintext highlighter-rouge">glob</code> package to get the paths for all the images stored in a list.</p>
+
+<p>After this, we extract the file names using a list comprehension. I use the image names to select the target labels in the CSV.  Not all labels have a corresponding image.</p>
+
+<p>We split the paths on <code class="language-plaintext highlighter-rouge">/</code> and select the last item (filename + extension). These image file names correspond to the id column in the CSV. We also split on <code class="language-plaintext highlighter-rouge">.</code> because I want only the file name, not the file extension.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s">"images"</span><span class="p">)</span>
+
+<span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">.</span><span class="n">glob</span><span class="p">(</span><span class="s">"images/*"</span><span class="p">))</span>
+<span class="n">files_names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">file</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">split</span><span class="p">(</span><span class="s">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+<span class="n">files_names</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[10000, 10001, 10002, 10003, 10004]
+</code></pre></div></div>
+
+<p>We now read in the <em>styles.csv</em> file containing the labels/classes for the images. I select the <code class="language-plaintext highlighter-rouge">id</code> column for the data frame that corresponds to the image names. We also select the <code class="language-plaintext highlighter-rouge">articleType</code> column containing the image class.</p>
+
+<p>We only selected the rows in our data frame that have a corresponding image file using <code class="language-plaintext highlighter-rouge">isin()</code>. I also chose to disregard rare labels (less than 10). Keeping these labels can impact performance negatively and sometimes leads to issues when using cross-validation.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"styles.csv"</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"articleType"</span><span class="p">])</span>
+<span class="n">df_full</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">.</span><span class="nb">id</span><span class="p">.</span><span class="n">isin</span><span class="p">(</span><span class="n">files_names</span><span class="p">)]</span>
+<span class="n">df_train</span> <span class="o">=</span> <span class="n">df_full</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'articleType'</span><span class="p">).</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We now have a data frame that contains the id of the images and their corresponding target labels.</p>
+
+<h3 id="creating-the-dataset">Creating the dataset</h3>
+
+<p>We are now ready to create a dataset. The fastai framework uses this dataset to train our image classifier. The process of creating a dataset for the framework is pretty easy and encompasses 4 steps:</p>
+
+<ol>
+  <li>Provide the inputs</li>
+  <li>Split the data</li>
+  <li>Label the inputs + transformations</li>
+  <li>Convert to databunch</li>
+</ol>
+
+<p>As stated earlier, I highly recommend following the fastai course to get a better understanding of the framework.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageList</span>
+        <span class="c1"># 1. Provide the inputs
+</span>         <span class="p">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df_train</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="o">/</span><span class="s">"images"</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s">".jpg"</span><span class="p">)</span>
+
+        <span class="c1"># 2. Split the data
+</span>         <span class="p">.</span><span class="n">split_by_rand_pct</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+
+        <span class="c1"># 3. Label the inputs + transformations
+</span>         <span class="p">.</span><span class="n">label_from_df</span><span class="p">()</span>
+         <span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">size</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+
+        <span class="c1"># 4. Convert to databunch
+</span>         <span class="p">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">256</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>As the cell above displays, we (1) provide a path to our images and labels. After this, we (2) split the data in 80% train and 20% validation data. Subsequently, we get the (3) label from the data frame, apply image augmentations using get_transforms(). We also resize our images to 60x60 pixels. Lastly, we (4) create databunch with a batch size of 256.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="p">.</span><span class="n">c</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">train_ds</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">valid_ds</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(107, 35430, 8857)
+</code></pre></div></div>
+
+<p>The dataset contains 107 different classes,  with 35430 training images and 8857 validation images.</p>
+
+<h3 id="visualizing-the-data">Visualizing the data</h3>
+
+<p>Before training our model on this dataset, it’s always a good idea to plot the images and their corresponding labels. Visualizing the data allows us to inspect if our dataset creation was successful. Do the images have the right labels?</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="p">.</span><span class="n">show_batch</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_21_0.png" alt="png" /></p>
+
+<p>Everything seems to be working out nicely!</p>
+
+<h3 id="training-the-model">Training the model</h3>
+
+<p>The training time is here! But we first need to decide which pre-trained model to use. We’ll use transfer learning to train the last few layers of this CNN to make it fit our specific problem.</p>
+
+<p>I chose ResNet50 architecture because it’s pretty <a href="https://dawn.cs.stanford.edu/benchmark/" target="_blank">successful</a> at image classification! We use accuracy as our training metric, because this is the metric we’re most interested in.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">.</span><span class="n">resnet50</span> <span class="p">,</span><span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>One of the most important but also one of the hardest parts is choosing a proper learning rate. I use fastai’s learning rate finder capability to choose the learning rate to keep it simple. However, for a better understanding of how to choose a learning rate, follow the fastai course.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">learn</span><span class="p">.</span><span class="n">lr_find</span><span class="p">()</span>
+<span class="n">learn</span><span class="p">.</span><span class="n">recorder</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">suggestion</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div>
+  <progress id="file" max="100" value="68"> 68% </progress>
+</div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.
+Min numerical gradient: 3.02E-03
+Min loss divided by 10: 3.02E-02
+</code></pre></div></div>
+
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_27_2.png" alt="png" /></p>
+
+<p>Our model doesn’t need to train for many epochs for us to asses its performance. We train our model for 6 epochs using the suggested learning rate. It’s performing okay. Make sure to also save this trained model, we don’t want to lose it!</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lr</span> <span class="o">=</span> <span class="mf">3.02E-03</span>
+<span class="n">learn</span><span class="p">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="n">lr</span><span class="p">))</span>
+</code></pre></div></div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>2.264242</td>
+      <td>1.361210</td>
+      <td>0.643446</td>
+      <td>02:03</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1.436984</td>
+      <td>1.009337</td>
+      <td>0.704076</td>
+      <td>01:28</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>1.127053</td>
+      <td>0.857740</td>
+      <td>0.742012</td>
+      <td>01:25</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.968476</td>
+      <td>0.787414</td>
+      <td>0.756125</td>
+      <td>01:26</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.846337</td>
+      <td>0.730250</td>
+      <td>0.774867</td>
+      <td>01:24</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.799669</td>
+      <td>0.725658</td>
+      <td>0.776448</td>
+      <td>01:24</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">learn</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">"stage-1"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Let’s try to improve this model. By unfreezing, we can train the full model, not only the last layers.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">learn</span><span class="p">.</span><span class="n">unfreeze</span><span class="p">()</span>
+<span class="n">learn</span><span class="p">.</span><span class="n">lr_find</span><span class="p">()</span>
+<span class="n">learn</span><span class="p">.</span><span class="n">recorder</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">suggestion</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div>
+  <progress value="0" class="" max="1"></progress>
+</div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value="84" class="" max="138"></progress>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LR</span> <span class="n">Finder</span> <span class="ow">is</span> <span class="n">complete</span><span class="p">,</span> <span class="nb">type</span> <span class="p">{</span><span class="n">learner_name</span><span class="p">}.</span><span class="n">recorder</span><span class="p">.</span><span class="n">plot</span><span class="p">()</span> <span class="n">to</span> <span class="n">see</span> <span class="n">the</span> <span class="n">graph</span><span class="p">.</span>
+<span class="n">Min</span> <span class="n">numerical</span> <span class="n">gradient</span><span class="p">:</span> <span class="mf">7.59E-07</span>
+<span class="n">Min</span> <span class="n">loss</span> <span class="n">divided</span> <span class="n">by</span> <span class="mi">10</span><span class="p">:</span> <span class="mf">2.29E-05</span>
+</code></pre></div></div>
+
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_32_2.png" alt="png" /></p>
+
+<p>We now train the unfrozen model for 6 more epochs, 12 epochs in total. Also, make sure to save the second training stage of our model.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">learn</span><span class="p">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">1e-04</span><span class="p">,</span> <span class="n">lr</span><span class="o">/</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">learn</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">"stage-2"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.722455</td>
+      <td>0.669436</td>
+      <td>0.792368</td>
+      <td>01:25</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.665747</td>
+      <td>0.577647</td>
+      <td>0.820820</td>
+      <td>01:26</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.563481</td>
+      <td>0.532775</td>
+      <td>0.837530</td>
+      <td>01:24</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.459141</td>
+      <td>0.457600</td>
+      <td>0.859998</td>
+      <td>01:25</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.365240</td>
+      <td>0.431368</td>
+      <td>0.866208</td>
+      <td>01:24</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.304618</td>
+      <td>0.419512</td>
+      <td>0.870498</td>
+      <td>01:24</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We reach an accuracy score of about 87% percent with 107 classes. This is a good enough model to use in our web app! Let’s export this model so we can use it in our application.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">learn</span><span class="p">.</span><span class="n">export</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="building-an-image-classification-web-app">Building an Image Classification Web App</h2>
+
+<p>Now that we trained our model, and it performs well enough (we can always do better), we are ready to build a web app. This application is build using only Python and HTML (additionally some CSS for styling). This web server will be build using Flask. This (micro) framework allows us to write a web app in Python.</p>
+
+<p>The file structure of our app will be as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── app.py
+├── models
+│   └── fashion-classifier.pkl
+├── static
+│   └── style.css
+└── templates
+    └── index.html
+</code></pre></div></div>
+
+<p>Make sure to put the exported model into the <code class="language-plaintext highlighter-rouge">models</code> folder. The <em>style.css</em> style sheet is in the <code class="language-plaintext highlighter-rouge">static</code> folder, the <em>index.html</em> is in the <code class="language-plaintext highlighter-rouge">templates</code> folder.</p>
+
+<h3 id="a-simple-web-server">A simple web-server</h3>
+
+<p>We’ll start by building a very simple web-server using Flask. We can create a basic web-server using the code below.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="o">@</span><span class="n">app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s">"/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">predict</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">"Hello World!"</span>
+</code></pre></div></div>
+
+<p>So what does this code actually do? Let me explain: The following code lets us create a new Flask app by:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Above our predict function, we see a decorator. This decorator is telling our app, whenever someone uses our app domain at the given route, execute the predict function below it. In this case, it will return the “Hello World” string.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">@</span><span class="n">app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s">"/"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We can now run our web-server and run it in debug mode, which allows us to automatically reload the server. To start the web-server and run it in debug mode:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">FLASK_APP</span><span class="o">=</span>app.py
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">FLASK_DEBUG</span><span class="o">=</span>1
+<span class="nv">$ </span>flask run
+</code></pre></div></div>
+
+<p>This will provide us with a web-server at http://localhost:5000/ (default).</p>
+
+<h3 id="the-prediction-api">The prediction API</h3>
+
+<p>We now build on the previous code to create our prediction API. This API needs to accept an image from a user as in input. Use this image to predict a fashion item class and return this class to a web-page. The code in the <code class="language-plaintext highlighter-rouge">app.py</code> for our predict API looks like the following:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="kn">import</span> <span class="n">load_learner</span><span class="p">,</span> <span class="n">open_image</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s">"model"</span><span class="p">,</span> <span class="s">"fashion-classifier.pkl"</span><span class="p">)</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="o">@</span><span class="n">app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s">'/'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'GET'</span><span class="p">,</span> <span class="s">'POST'</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_prediction</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="p">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">'POST'</span><span class="p">:</span>
+        <span class="n">image_file</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">files</span><span class="p">[</span><span class="s">'image-file'</span><span class="p">]</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">open_image</span><span class="p">(</span><span class="n">image_file</span><span class="p">)</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">clf</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">image</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'home.html'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">pred</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'home.html'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Let’s run through this code line by line. First, we used <code class="language-plaintext highlighter-rouge">load_learner</code> to load our trained model stored as a pickle file.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clf</span> <span class="o">=</span> <span class="n">load_learner</span><span class="p">(</span><span class="s">"model"</span><span class="p">,</span> <span class="s">"fashion-classifier.pkl"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>After loading the model, we need a way to make “POST” and “GET” requests.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">@</span><span class="n">app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s">'/'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'GET'</span><span class="p">,</span> <span class="s">'POST'</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_prediction</span><span class="p">():</span>
+</code></pre></div></div>
+
+<p>Inside our predict function, we check if we’re making a POST request. In our case, this is “uploading” an image.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">request</span><span class="p">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">'POST'</span><span class="p">:</span>
+</code></pre></div></div>
+
+<p>If this is the case, we want to request the files with the name <code class="language-plaintext highlighter-rouge">image-file</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">image_file</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">files</span><span class="p">[</span><span class="s">'image-file'</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>We now use open_image from fastai to open this file as an image/array.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">image</span> <span class="o">=</span> <span class="n">open_image</span><span class="p">(</span><span class="n">image_file</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>After opening up this image, we can use our trained model to predict its class. Because <code class="language-plaintext highlighter-rouge">.predict</code> returns more than the class, we use index 0 to only grab the label. You could also grab the probability of the class if you wanted to.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pred</span> <span class="o">=</span> <span class="n">clf</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">image</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>We then use <code class="language-plaintext highlighter-rouge">render_template</code> to return the <em>index.html</em> page we will create in the next section.  However, we also add the label variable, which contains our prediction class. This variable can be displayed on the web page.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'home.html'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">pred</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>However, if we make a “GET” request, we simply want to render the original web page without adding the label variable.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">else</span><span class="p">:</span> 
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'home.html'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The prediction API is now finished. Let’s now build a simple HTML page for the user to interact with.</p>
+
+<h3 id="building-the-front-end">Building the front-end</h3>
+
+<p>Now that our prediction Flask API is ready we can build the front-end for the user to interact with. We can start by building a basic HTML web-page with a form that can take an image as input.</p>
+
+<p>This is how the body of our <em>index.html</em> file inside the templates folder looks like</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>Fasion item Classifier<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">"post"</span> <span class="na">enctype=</span><span class="s">multipart/form-data</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">name=</span><span class="s">"image-file"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"predict"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/form&gt;</span>
+    
+  <span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">form</code> element is the main part of this page and is used to make “POST” requests. Make sure to set <code class="language-plaintext highlighter-rouge">enctype</code> to <code class="language-plaintext highlighter-rouge">multipart/form-data</code> as this is needed to accept files. The form takes two user inputs. The first one allows us to input a file/image. The second input submits the image and returns a prediction.</p>
+
+<p>If an image file is uploaded and submitted,  we want to display the prediction result on the page. The HTML code below makes this possible.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<h3 id="making-inferences">Making inferences</h3>
+
+<p>We’re now ready to upload our own image and see what our models predict this clothing item is. I will test our app by uploading this photo of my sneakers.</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_sample_image.jpeg" alt="jpg" /></p>
+
+<p>Let’s make a prediction using our web app. The model predicts that these are “sports shoes”, which is correct. The image below shows our web app without any additional styling.</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_simple_app.png" alt="png" /></p>
+
+<p>We now have a fully functional web app that can predict fashion items from an image. To make the app look like the example at the start of the post, you need to add some additional HTML and some CSS.</p>
+
+<p><em>The full web app with the additional HTML and CSS can be found on my <a href="https://github.com/maxscheijen/blog-post-code/tree/master/image-classification-web-app-using-fastai" target="_target">GitHub</a>.</em></p>
+
+  </div><a class="u-url" href="/2020-03-29-image-classification-web-app-using-fastai" hidden></a>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+    </div>
+  </div>
+
+</footer></body>
+
+</html>

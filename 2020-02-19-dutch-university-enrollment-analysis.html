@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Dutch University Enrollment Analysis | Max Scheijen</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Dutch University Enrollment Analysis" />
+<meta name="author" content="Max Scheijen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In this post, I’ll do a quick descriptive analysis of some enrollment data from Dutch universities. I won’t do any predictive modeling or statistical testing. The data is provided by the Dienst Uitvoering Onderwijs, which is the executive organization for education of the Dutch government. The data ranges from 2014-2018." />
+<meta property="og:description" content="In this post, I’ll do a quick descriptive analysis of some enrollment data from Dutch universities. I won’t do any predictive modeling or statistical testing. The data is provided by the Dienst Uitvoering Onderwijs, which is the executive organization for education of the Dutch government. The data ranges from 2014-2018." />
+<link rel="canonical" href="maxscheijen.github.io/2020-02-19-dutch-university-enrollment-analysis" />
+<meta property="og:url" content="maxscheijen.github.io/2020-02-19-dutch-university-enrollment-analysis" />
+<meta property="og:site_name" content="Max Scheijen" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-02-19T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Dutch University Enrollment Analysis" />
+<meta name="twitter:site" content="@maxscheijen" />
+<meta name="twitter:creator" content="@Max Scheijen" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-02-19-dutch-university-enrollment-analysis","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-02-19-dutch-university-enrollment-analysis"},"datePublished":"2020-02-19T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"In this post, I’ll do a quick descriptive analysis of some enrollment data from Dutch universities. I won’t do any predictive modeling or statistical testing. The data is provided by the Dienst Uitvoering Onderwijs, which is the executive organization for education of the Dutch government. The data ranges from 2014-2018.","headline":"Dutch University Enrollment Analysis","dateModified":"2020-02-19T00:00:00+01:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
+</head>
+<body>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+        }
+      });
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Max Scheijen</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a>
+            <a class="page-link" href="https://twitter.com/maxscheijen" target="_blank">Twitter</a>
+            <a class="page-link" href="https://github.com/maxscheijen" target="_blank">Github</a>
+            <a class="page-link" href="/feed.xml" target="_blank">Subscribe</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Dutch University Enrollment Analysis</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2020-02-19T00:00:00+01:00" itemprop="datePublished">
+        Feb 19, 2020
+      </time>
+      <span>• 
+
+  
+    3 min read
+  
+
+</span>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Max Scheijen</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>In this post, I’ll do a quick descriptive analysis of some enrollment data from Dutch universities. I won’t do any predictive modeling or statistical testing. The data is provided by the <a href="https://duo.nl/open_onderwijsdata/databestanden/ho/ingeschreven/wo-ingeschr/ingeschrevenen-wo1.jsp" target="_blank">Dienst Uitvoering Onderwijs</a>, which is the executive organization for education of the Dutch government. The data ranges from 2014-2018.</p>
+
+<p>This post is written in English. However, some of the labels in the figures are written in Dutch because the dataset contains categories written in this language. However, they aren’t too hard to figure out!</p>
+
+<p>This post is structured in the following way: First, we investigate the distribution of academic degrees. Secondly, we look at the differences in faculty enrollment between faculties and over time. After that, we analyze the geographical distribution of enrolled students. Last, I examine the differences between gender ratios regarding individual universities and study programs.</p>
+
+<div class="alert" style="background-color: #f6f6f6">
+    <strong>Note: </strong> Some "hogescholen" offer master degrees these schools are however <u>dropped</u>.
+</div>
+
+<h2 id="academic-degrees">Academic Degrees</h2>
+<p>My first instinct is to analyze the count distribution between academic degrees. Netherlands has two general academic degrees. A bachelor degree and a master degree. The most bachelor degrees in take three years to obtain. An academic master’s degree is a one-year or two-year course (and in exceptional cases more than two years long).</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-02-19-academic-degree.png" alt="png" /></p>
+
+<p>As the figure above displays, most students enroll in a master’s degree between 2014 and 2018.  However, if we take the bachelor’s degrees together with the “propedeuse bachelor” degree, which is obtained after completion of the first-year bachelor, this category becomes most frequent.</p>
+
+<h2 id="faculty-enrollment">Faculty Enrollment</h2>
+<p>A faculty is a division within a university comprising one subject area or a group of related subject areas. Let’s look at the differences of enrollment between faculties.</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-02-19-enrollment-faculty.png" alt="png" /></p>
+
+<p>The faculty “Gedrag en Maatschappij” (across all universities) has the most students enrolled between 2014 and 2018. Most Social and Behavioral Sciences are part of this faculty. As stated by <a href="https://www.uva.nl/en/about-the-uva/organisation/faculties/faculty-of-social-and-behavioural-sciences/organisation-and-contact/organisation.html" target="_blank">The Faculty of Social and Behavioural Sciences of the University of Amsterdam</a>:</p>
+
+<blockquote>
+  <p>“<em>Research and education at the Faculty address societal and human behavior related themes, like the impact of new media on society, healthcare, urbanization, human and child development, mental health, inequalities, diversity and social cohesion</em>.”</p>
+</blockquote>
+
+<p>Some studies in this faculty are social sciences such as 
+Anthropology, Economics (sometimes), Political Science, Psychology and Sociology and many more.</p>
+
+<p>There is a large shortage of teachers in the Netherlands. This figure shows that in the 2014-2018 period, enrollments at the education faculties were, in absolute terms, the lowest compared to other faculties. However, a connection between the two observations cannot be established.</p>
+
+<p>We can, however, try to find out whether there have been changes in the number of enrollments over time. We do this by comparing the 2014 registrations with those of 2018.</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-02-19-enrollment-faculty-overtime.png" alt="png" /></p>
+
+<p>We can see that almost all faculty enrollments increased between 2014 and 2018. The biggest absolute increases are for the “Techniek” like Engineering and Computer Science programs and “Natuur” like Physics, Biology and Chemistry programs. Both consist of so-called “exact” or “hard” sciences. There is a lot of focus to increase technical studies in the Netherlands. Which seems to be working!</p>
+
+<p>The only faculty that has a decrease in enrollments is the education faculty. This can be one of the explanations for the teacher shortage.</p>
+
+<h2 id="enrollment-based-on-location-and-institution">Enrollment based on location and institution</h2>
+<p>Let’s now look at the number of enrollments based on the location. We have both city and province/state data. Not every province has a university. Therefore not all provinces will be represented in the graph below.</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-02-19-enrollment-province.png" alt="png" /></p>
+
+<p>We see that both Zuid-Holland and Noord-Holland Universities have the most students enrolled. Both provinces also have the biggest populations what can be an explanation. Zuid-Holland as 3 universities and Noord-Holland has 2 universities.</p>
+
+<p>Location can also be tied to the enrollment numbers for individual Universities.</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-02-19-enrollment-university.png" alt="png" /></p>
+
+<p>We can see that the biggest enrollment universities are all located in the so-called “Randstad”. This is a metropolitan area that includes the four largest cities in the Netherlands: Amsterdam, Rotterdam, The Hague, and Utrecht.</p>
+
+<h2 id="gender-and-enrollment">Gender and Enrollment</h2>
+<p>Another variable included in the dataset is gender. We’ll look at ratios between the enrollment of men and women at universities and fields of study.</p>
+
+<p>The figure below displays the absolute ration of enrollments based on gender at universities in the Netherlands between 2014 and 2018.</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-02-19-enrollment-gender-university.png" alt="png" /></p>
+
+<p>We can see that at almost all universities women are in the majority. The only universities where men have a clear majority are technical universities.</p>
+
+<p>Let’s look at the fields of study that have the biggest ratio of differences between men and women and vice versa. I excluded programs that have less than 100 enrollments over 4 years to keep some robustness.</p>
+
+<p><img src="maxscheijen.github.io/assets/img/2020-02-19-enrollment-gender-study.png" alt="png" /></p>
+
+<p><sup>* DPiEaCS (research): Developmental Psychopathology in Education and Child Studies (research)</sup><br />
+<sup>* DaSiCaA (research): Development and Socialisation in Childhood and Adolescence (research)</sup></p>
+
+<p>Most of the technical programs have a high ratio of men relative to women.  Automatic Technology has a ration of 42 to 1. Meaning that for every 42 men following the program 1 woman enrolled. On the other hand the non-research program Education and Child Studies as about a women ratio of 22 to 1.</p>
+
+<p>These programs seem divided along with the “traditional”  view of gender divided fields of study. Men have the enrollment overhand in technical and computer science programs and women tend to have the overhand in programs focuses on education and health.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>In this post, I did a quick and basic analysis of University enrollment data. There are a lot more ways to analyze this data.  However, we saw that social studies programs have the highest enrollment in the period between 2014 and 2018.  That technical studies are growing fastest. Most enrolled students study at Universities in the “Randstad” and that there seem to be some traditional gender divisions for some programs.</p>
+
+<p><i>This code to generate do this analysis and generate the figures is on available on <a href="https://github.com/maxscheijen/blog-post-code/tree/master/dutch-university-enrollment-analysis" target="_blank">GitHub</a>.</i></p>
+
+  </div><a class="u-url" href="/2020-02-19-dutch-university-enrollment-analysis" hidden></a>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+    </div>
+  </div>
+
+</footer></body>
+
+</html>

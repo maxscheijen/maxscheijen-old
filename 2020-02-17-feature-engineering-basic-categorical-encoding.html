@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Feature Engineering: Categorical Data | Max Scheijen</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Feature Engineering: Categorical Data" />
+<meta name="author" content="Max Scheijen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Good and robust feature engineering can improve many machine learning models. One way to create new features is by encoding categorical variables. Categorical features contain qualitative information. Many machine learning algorithms can only deal with numerical data. However, these categorical variables are often encoded as strings. There are many techniques to encode these features. In this post, we look at several basic methods of transforming these variables to some numeric representation. I highlight the pros and cons of these encoding techniques for the use of some of the commonly used machine learning models." />
+<meta property="og:description" content="Good and robust feature engineering can improve many machine learning models. One way to create new features is by encoding categorical variables. Categorical features contain qualitative information. Many machine learning algorithms can only deal with numerical data. However, these categorical variables are often encoded as strings. There are many techniques to encode these features. In this post, we look at several basic methods of transforming these variables to some numeric representation. I highlight the pros and cons of these encoding techniques for the use of some of the commonly used machine learning models." />
+<link rel="canonical" href="maxscheijen.github.io/2020-02-17-feature-engineering-basic-categorical-encoding" />
+<meta property="og:url" content="maxscheijen.github.io/2020-02-17-feature-engineering-basic-categorical-encoding" />
+<meta property="og:site_name" content="Max Scheijen" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-02-17T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Feature Engineering: Categorical Data" />
+<meta name="twitter:site" content="@maxscheijen" />
+<meta name="twitter:creator" content="@Max Scheijen" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-02-17-feature-engineering-basic-categorical-encoding","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-02-17-feature-engineering-basic-categorical-encoding"},"datePublished":"2020-02-17T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"Good and robust feature engineering can improve many machine learning models. One way to create new features is by encoding categorical variables. Categorical features contain qualitative information. Many machine learning algorithms can only deal with numerical data. However, these categorical variables are often encoded as strings. There are many techniques to encode these features. In this post, we look at several basic methods of transforming these variables to some numeric representation. I highlight the pros and cons of these encoding techniques for the use of some of the commonly used machine learning models.","headline":"Feature Engineering: Categorical Data","dateModified":"2020-02-17T00:00:00+01:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
+</head>
+<body>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+        }
+      });
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Max Scheijen</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a>
+            <a class="page-link" href="https://twitter.com/maxscheijen" target="_blank">Twitter</a>
+            <a class="page-link" href="https://github.com/maxscheijen" target="_blank">Github</a>
+            <a class="page-link" href="/feed.xml" target="_blank">Subscribe</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Feature Engineering: Categorical Data</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2020-02-17T00:00:00+01:00" itemprop="datePublished">
+        Feb 17, 2020
+      </time>
+      <span>• 
+
+  
+    4 min read
+  
+
+</span>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Max Scheijen</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Good and robust feature engineering can improve many machine learning models. One way to create new features is by encoding categorical variables. Categorical features contain qualitative information. Many machine learning algorithms can only deal with numerical data. However, these categorical variables are often encoded as strings. There are many techniques to encode these features. In this post, we look at several basic methods of transforming these variables to some numeric representation. I highlight the pros and cons of these encoding techniques for the use of some of the commonly used machine learning models.</p>
+
+<p>We’ll use some artificial data to demonstrate these techniques. I also use term variables and features interchangeably.</p>
+
+<h2 id="categorical-data-types">Categorical Data types</h2>
+
+<p>There are two main types of categorical data. Nominal data has <u>no intrinsic order</u> to it. Examples of these features are the cities, street names, gender, and many more. Ordinal features are different because there is an <u>intrinsic order</u> to the categories. Often surveys use the <a href="https://en.wikipedia.org/wiki/Likert_scale" target="_black">Likert scale</a> to get opinions about subjects. This scale as an order to it and ranges from strongly disagree to strongly agree. The data type of the variable influence the technique we use to encoding that particular feature.</p>
+
+<h2 id="one-hot-encoding">One-Hot Encoding</h2>
+
+<p>One-hot encoding or dummy encoding is a technique where we encode a categorical by indicating if the category is present for each observation.  This technique is most used on nominal categorical data. Generally, we can encode the different labels by $k$-1 binary features. Where $k$ is the number of categories present in the variable. For example, the variable biological sex has two different variables (female and male) and therefore has a $k$ value of 2.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># load data processing library
+</span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="c1"># load and display data
+</span><span class="n">sex</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'sex.csv'</span><span class="p">)</span>
+
+<span class="c1"># create copy of data
+</span><span class="n">sex_ohe_1</span> <span class="o">=</span> <span class="n">sex</span><span class="p">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># use get_dummies and drop_first=True for k-1 one-hot encoding
+</span><span class="n">sex_ohe_1</span><span class="p">[</span><span class="s">'male'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">sex_ohe_1</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'sex'</span><span class="p">],</span> <span class="n">drop_first</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># display encoding
+</span><span class="n">sex_ohe_1</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>sex</th>
+      <th>male</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>female</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>female</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>male</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>female</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>male</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>male</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>male</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>female</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>female</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>female</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>The advantage of one-hot encoding with $k$-1 features is that we can represent the whole dataset with one less dimension. However, we can also use $k$ binary features to represent a categorical variable. If we want to asses the importance of every single feature it is better to use as my groups as labels. Often tree-based models perform better on data that is encoded in $k$ features. If we use the same example as above the encoding look like the following:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># create copy of data
+</span><span class="n">sex_ohe_2</span> <span class="o">=</span> <span class="n">sex</span><span class="p">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># use get_dummies and drop_first=False for k one-hot encoding
+</span><span class="n">sex_ohe_2</span><span class="p">[[</span><span class="s">'female'</span><span class="p">,</span> <span class="s">'male'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">sex_ohe_2</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'sex'</span><span class="p">])</span>
+
+<span class="c1"># display encoding
+</span><span class="n">sex_ohe_2</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>sex</th>
+      <th>female</th>
+      <th>male</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>male</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>male</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>male</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>male</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>The main advantages of one hot encoding are that it doesn’t assume a particular distribution of the data, keeps all the information and can also be used with linear models. However, this technique can expand the feature space a lot if there are many different labels in the categorical variable (high cardinality).</p>
+
+<p>In python, you can also use <code class="language-plaintext highlighter-rouge">OneHotEncoder</code> method from <code class="language-plaintext highlighter-rouge">sklearn</code> to implement one-hot encoding.</p>
+
+<div class="alert alert-warning">
+  <strong>Note: </strong> Normally you would note keep the original feature, this is purely for demonstration.
+</div>
+
+<h2 id="label-encoding">Label Encoding</h2>
+
+<p>Label encoding is one of the most used methods to encode ordinal categorical features. However, it can also be used with a nominal variable. We replace the labels in a feature with integer starting at 0 to $n$. Where $n$ is the number of labels in the feature.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># load LabelEncoder
+</span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
+
+<span class="c1"># load cars data
+</span><span class="n">cars</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'cars.csv'</span><span class="p">)</span>
+
+<span class="c1"># create copy of data
+</span><span class="n">cars_le</span> <span class="o">=</span> <span class="n">cars</span><span class="p">[[</span><span class="s">'car_brand'</span><span class="p">]].</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># apply labelencododer to car_brand feature
+</span><span class="n">cars_le</span><span class="p">[</span><span class="s">'car_encoded'</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_le</span><span class="p">[[</span><span class="s">'car_brand'</span><span class="p">]].</span><span class="nb">apply</span><span class="p">(</span><span class="n">LabelEncoder</span><span class="p">().</span><span class="n">fit_transform</span><span class="p">)</span>
+
+<span class="c1"># display encoding
+</span><span class="n">cars_le</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>car_brand</th>
+      <th>car_encoded</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ford</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>toyota</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>toyota</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ford</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ford</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>toyota</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>ford</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>bmw</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>ford</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>toyota</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>One advantage of label encoding over one-hot encoding is that this method does not expand the feature space. We do not create any new features using this technique.</p>
+
+<p>Even though label encoding also works well with tree-based models this technique can lead to some problems when used with linear models. If we use label encoding on nominal variable linear models assume that there is some order to the encoded variable even when there is none.  Tree-based models don’t have this problem.</p>
+
+<p>One-hot and label encoding are probably the most used categorical encoding techniques.</p>
+
+<h2 id="frequency-encoding">Frequency Encoding</h2>
+
+<p>When using frequency encoding we replace the label in a categorical feature with the percentage of that particular label in the variable. This method assumes that the number of observations shown by each category is predictive of our target. Frequency encoding is often used in data science competitions.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># create copy of data
+</span><span class="n">cars_fe</span> <span class="o">=</span> <span class="n">cars</span><span class="p">[[</span><span class="s">'car_brand'</span><span class="p">]].</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># get frequency of the car_brands
+</span><span class="n">counts</span> <span class="o">=</span> <span class="n">cars_fe</span><span class="p">[</span><span class="s">'car_brand'</span><span class="p">].</span><span class="n">value_counts</span><span class="p">().</span><span class="n">to_dict</span><span class="p">()</span>
+
+<span class="c1"># apply frequency and divide by number of observations for frequency
+</span><span class="n">cars_fe</span><span class="p">[</span><span class="s">'freq_enc'</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_fe</span><span class="p">[</span><span class="s">'car_brand'</span><span class="p">].</span><span class="nb">map</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">cars_fe</span><span class="p">)</span>
+
+<span class="c1"># apply frequency for count
+</span><span class="n">cars_fe</span><span class="p">[</span><span class="s">'count_enc'</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_fe</span><span class="p">[</span><span class="s">'car_brand'</span><span class="p">].</span><span class="nb">map</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+
+<span class="c1"># display encoding
+</span><span class="n">cars_fe</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>car_brand</th>
+      <th>freq_enc</th>
+      <th>count_enc</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ford</td>
+      <td>0.5</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>toyota</td>
+      <td>0.4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>toyota</td>
+      <td>0.4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ford</td>
+      <td>0.5</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ford</td>
+      <td>0.5</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>toyota</td>
+      <td>0.4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>ford</td>
+      <td>0.5</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>bmw</td>
+      <td>0.1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>ford</td>
+      <td>0.5</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>toyota</td>
+      <td>0.4</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>When we use frequency or count as the same pros and cons as the label encoding method. It is also possible that different labels get the same encoding. If two categories occur the same number of times.</p>
+
+<p>However, it can be a great way of encoding categorical features with high cardinality.  It assumes that there is a connection between the frequency of the label and the target,  <a href="https://towardsdatascience.com/all-about-categorical-variable-encoding-305f3361fd02" target="_black"> “it helps the model to understand and assign the weight in direct and inverse proportion, depending on the nature of the data”</a>.</p>
+
+<h2 id="target-encoding">Target Encoding</h2>
+
+<p>The target encoding technique uses the mean of the target feature to replace the categorical variable. By doing so we take into account the number of labels with the target feature. This way we can decrease cardinally in the variable.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># create copy of data
+</span><span class="n">cars_te</span> <span class="o">=</span> <span class="n">cars</span><span class="p">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># groupby categorical_variable and get mean of target variable
+</span><span class="n">target</span> <span class="o">=</span> <span class="n">cars_te</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'car_brand'</span><span class="p">)[</span><span class="s">'target'</span><span class="p">].</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="c1"># map target mean variable for category
+</span><span class="n">cars_te</span><span class="p">[</span><span class="s">'target_enc'</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_te</span><span class="p">[</span><span class="s">'car_brand'</span><span class="p">].</span><span class="nb">map</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+<span class="c1"># display encoding
+</span><span class="n">cars_te</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>car_brand</th>
+      <th>target</th>
+      <th>target_enc</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ford</td>
+      <td>1</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>toyota</td>
+      <td>1</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>toyota</td>
+      <td>0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ford</td>
+      <td>0</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ford</td>
+      <td>0</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>toyota</td>
+      <td>0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>ford</td>
+      <td>1</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>bmw</td>
+      <td>0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>ford</td>
+      <td>1</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>toyota</td>
+      <td>1</td>
+      <td>0.5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>The main con of this technique is its dependency on the distribution of the target. This can lead to over-fitting. You can use <a href="https://en.wikipedia.org/wiki/Additive_smoothing" target="_blank">additive smoothing</a> to counter this. It can also lead to encoding several different categories with the same numerical encoding.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In this post, we looked at some basic feature engineering by highlighting several techniques to encode categorical data into a numerical representation. There are many more methods to encode categorical variables. You can experiment with these techniques to see which makes the best predictive machine learning model.</p>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li><a href="https://www.udemy.com/course/feature-engineering-for-machine-learning/" target="_blank">Feature Engineering for Machine Learning</a> by Soledad Galli</li>
+  <li><a href="https://towardsdatascience.com/all-about-categorical-variable-encoding-305f3361fd02" target="_blank">All about Categorical Variable Encoding</a> by Baijayanta Roy</li>
+</ul>
+
+  </div><a class="u-url" href="/2020-02-17-feature-engineering-basic-categorical-encoding" hidden></a>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+    </div>
+  </div>
+
+</footer></body>
+
+</html>
