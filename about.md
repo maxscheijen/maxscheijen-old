@@ -3,7 +3,7 @@ layout: page
 title: About
 permalink: /about/
 ---
-<img src="{{ site.url }}/assets/img/profile-picture.jpeg" width=200px align="right" style="padding: 0 0 20px 20px;">
+<img src="https://maxscheijen.github.io/assets/img/profile-picture.jpeg" width=200px align="right" style="padding: 0 0 20px 20px;">
 
 Hi!
 
