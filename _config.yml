@@ -24,7 +24,7 @@ google_analytics: UA-154715114-1
 scholar:
   style: custom
   source: _bibliography
-  sort_by: author
+  sort_by: name
   bibliography_list_tag: p
   bibliography_item_tag: p
   bibtex_filters:
