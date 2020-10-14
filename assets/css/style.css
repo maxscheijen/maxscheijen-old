@@ -369,4 +369,6 @@ tr, td, th { white-space: nowrap; overflow: hidden; font-size: 13px !important; 
 
 .post-list li { border-bottom: grey !important; }
 
+blockquote { color: #333; background-color: aliceblue; border-left: none; padding: 15px; font-size: 14px; font-style: initial !important; }
+
 /*# sourceMappingURL=style.css.map */
