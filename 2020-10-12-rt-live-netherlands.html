@@ -10,8 +10,8 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="The effective reproduction number $R_t$ is a way to quantify how quickly a virus spreads and measures the number of people infected by one contagious person. In this post, I model the Dutch daily case count with a simple Bayesian model proposed by Systrom et al. [2] that allows us to estimate the $ R_t $ in real-time." />
 <meta property="og:description" content="The effective reproduction number $R_t$ is a way to quantify how quickly a virus spreads and measures the number of people infected by one contagious person. In this post, I model the Dutch daily case count with a simple Bayesian model proposed by Systrom et al. [2] that allows us to estimate the $ R_t $ in real-time." />
-<link rel="canonical" href="maxscheijen.github.io/2020-10-12-rt-live-netherlands" />
-<meta property="og:url" content="maxscheijen.github.io/2020-10-12-rt-live-netherlands" />
+<link rel="canonical" href="http://localhost:4000/2020-10-12-rt-live-netherlands" />
+<meta property="og:url" content="http://localhost:4000/2020-10-12-rt-live-netherlands" />
 <meta property="og:site_name" content="Max Scheijen" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-10-12T00:00:00+02:00" />
@@ -20,18 +20,9 @@
 <meta name="twitter:site" content="@maxscheijen" />
 <meta name="twitter:creator" content="@Max Scheijen" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-10-12-rt-live-netherlands","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-10-12-rt-live-netherlands"},"datePublished":"2020-10-12T00:00:00+02:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"The effective reproduction number $R_t$ is a way to quantify how quickly a virus spreads and measures the number of people infected by one contagious person. In this post, I model the Dutch daily case count with a simple Bayesian model proposed by Systrom et al. [2] that allows us to estimate the $ R_t $ in real-time.","headline":"Estimating COVID-19’s $R_t$ in Real-Time for the Netherlands","dateModified":"2020-10-12T00:00:00+02:00","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","url":"http://localhost:4000/2020-10-12-rt-live-netherlands","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020-10-12-rt-live-netherlands"},"datePublished":"2020-10-12T00:00:00+02:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"The effective reproduction number $R_t$ is a way to quantify how quickly a virus spreads and measures the number of people infected by one contagious person. In this post, I model the Dutch daily case count with a simple Bayesian model proposed by Systrom et al. [2] that allows us to estimate the $ R_t $ in real-time.","headline":"Estimating COVID-19’s $R_t$ in Real-Time for the Netherlands","dateModified":"2020-10-12T00:00:00+02:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
-<script>
-  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-154715114-1');
-</script>
-
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Max Scheijen" />
 </head>
 <body>
     <script type="text/x-mathjax-config">
@@ -92,7 +83,7 @@
 <p><img src="https://raw.githubusercontent.com/maxscheijen/rt-live-netherlands/master/figures/original_smoothed.svg" alt="original_smoothed" /></p>
 
 <div class="alert alert-warning">
-  <strong>Note: </strong> All credit for developing this model goes to    Systrom et al. <a class="citation" href="#rtlive2020">[1]</a>. They did all the hard work. I simply applied their insights, research, and model to estimate the real-time $R_t$ in the Netherlands.
+  <strong>Note: </strong> All credit for developing this model goes to Systrom et al. <a class="citation" href="#rtlive2020">[1]</a>. They did all the hard work. I simply applied their insights, research, and model to estimate the real-time $R_t$ in the Netherlands.
 </div>
 
 <p>Later on, Systrom et al.’s <a class="citation" href="#rtlive2020">[1]</a> developed a more complex Bayesian model that uses the positive test rate and <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo" target="_blank">MCMC</a> sampling to estimate $R_t$, as seen on <a href="https://rt.live" target="_blank">rt.live</a>. The positive test rate is a more useful measure because the number of raw positive tests is influenced by how many people are tested. The more you test, the more positive cases you will find. Therefore making test positive rate more informative.</p>
