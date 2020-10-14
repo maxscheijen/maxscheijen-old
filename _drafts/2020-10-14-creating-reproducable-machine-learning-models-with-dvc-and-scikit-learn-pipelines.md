@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Reproducible Machine Learning"
+title: "Reproducible Machine Learning is challenging"
 categories: [data-science, machine-learning, reproducability, deployment]
 author: Max Scheijen
 ---
@@ -25,28 +25,39 @@ Lack of reproducibility can have numerous negatively impact an organization. For
 
 Cost or not the only reasons why you should strive to create reproducible machine learning models. There is also a **regulatory** need for reproducibility. Some industries are under scrutiny by regulatory authorities, especially after the introduction of the General Data Protection Regulation in the European Union. Regulatory authorities can request how a prediction by a machine learning model was made {% cite samiullah_2019 %}. However, this prediction was made an earlier version of the model. The current model makes other predictions given the used data. We need to go back to previous versions. Therefore we need to think carefully about designing our machine learning model pipeline. We need to keep in mind that we need to be able to reproduce earlier models and data {% cite samiullah_2019 %}.
 
-## Reproducability in Machine Learning systems is difficult
+## Why reproducibility in Machine Learning systems is difficult
 
-So why do I keep saying that create reproducible machine learning models is difficult? In contrast to traditional software engineering, where we build deterministic software. There is no randomness involved in constructing these systems. Therefore they can easily be versioned using version control. This makes it possible to easily roll back to earlier versions of the system. However, machine learning systems are often stochastic, they rely on some sort of randomness for their build. This makes them much harder to version.  Machine learning systems consist of both code and data, and both of them can change. Changes in one of these components result in a different model {% cite gorcenski_2019 %}.
+So why do I keep saying that creating reproducible machine learning models is difficult? In contrast to traditional software engineering, where we build deterministic software, machine learning systems are often stochastic. Meaning there is randomness involved in constructing these systems. 
 
-To fully reproduce machine learning systems we have to take several steps:
+Where tradition deterministic software can more easily be version controlled, this challenging when dealing with the randomness of stochastic machine learning systems. When software is deterministic, it is possible to easily roll back to earlier versions of the system. However, machine learning systems are often stochastic, they rely on some sort of randomness for their build. This makes them much harder to version because randomness is hard to reproduce.  
 
-1. The minimum requirement is to we should save and **version control the code** which processes the data and trains the model. 
+However, the stochastic nature of machine learning algorithms is not the only difficulty. Machine learning systems consist of both code and data, and both of them can change. Changes in one of these components result in a different model {% cite gorcenski_2019 %}. Therefore we need to also versional control the data because our machine learning model is built/trained on the data. If the data changes, the machine learning model changes, even when we find a way to control the stochastic nature of some of the models.
+
+To fully reproduce machine learning systems, we need to create a completely reproducible machine learning pipeline. Sugimura and Hart (2018) present important components to consider when creating reproducible systems {% cite sugimura_2018 %}. Let's take a look at the steps involved in creating a reproducible machine learning pipeline.
+
+1. The minimum requirement is to we should save and, **version control the code** which processes the data and trains the model.
 2. We should specify the **version of all the software and packages** used in creating the pipeline.
 3. We must record how we obtain **data**, which specific samples, and how we process them.
-4. If we use some sort of random or grid search to find **hyperparameters**, we need to save them. 
+4. If we use some sort of random or grid search to find **hyperparameters**, we need to save them.
 5. It can also be a good idea to record the hardware used to train the model.
 
 Basically, we need a way to version the entire machine learning pipeline {% cite sugimura_2018 %}. Therefore we need to build for reproducibility from the start.
 
-> Persist all model inputs and outputs, as well as all relevant metadata such as config, dependencies, geography, timezones and anything else you think you might need if you ever had to explain a prediction from the past. Pay attention to versioning, including of your training data {% cite samiullah_2019 %}.
+Samiullah states in a blog post about productizing machine learning models: "Persist all model inputs and outputs, as well as all relevant metadata such as config, dependencies, geography, timezones and anything else you think you might need if you ever had to explain a prediction from the past. Pay attention to versioning, including your training data" {% cite samiullah_2019 %}.
 
-Let's take a closer look at some of these components. 
+So, creating reproducible machine learning systems is difficult because it relies on data to build, in addition to the often stochastic nature of these systems. When want to create reproducible machine learning systems from the start, what are the most important parts we need to take into account? Let's take a closer look at the main components of a machine learning system: code, data, and models.
 
-<!-- ### Software
+![png]({{ site.url }}/assets/img/2020-10-14-reproducable-ml-data-model-code.svg)
 
-For full reproducibility, the software versions should match exactly. Save the versions of every software package in the environment.
+## Reproducible components of Machine Learning Systems
 
+Before discussing the main components of machine learning systems, I need to highlight the importance of **software versions**. Controlling the software used to create machine learning systems may be the easiest part of the pipeline, especially when using open-source software. Always record the version of the software or software package your using, in the most detailed manner. For example, record the python version you used (3.7.2), and the version of scikit-learn you used to create the model. Sometimes default parameters change between versions. This can result in a possible different machine learning model and output on the same data.
+
+### Code
+
+Let's first discuss the code component of our pipeline. This is the most likely the most intuitive way to create a reproducible system if you are familiar with a more traditional software engineering approaches. We can version-control systems for tracking changes in our source code. Git is probably the most used and well known version-control software. We can connect our Git repositories with GitHub or Gitlab for additional functionality and easier collaboration.
+
+<!-- 
 ### Code
 - Of all the components of a machine learning system, code is probably the best understood among technologists, because we have been working on building deterministic software systems for a while, and continuous delivery principles are pretty well understood in this context (Emily F. Gorcenski). 
 - Feature provenance refers to the historical record of how a feature is generated. Any change to how a feature is generated should be tracked and version controlled (Sugimura & Hartl).
