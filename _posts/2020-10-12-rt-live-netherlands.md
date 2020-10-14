@@ -16,7 +16,7 @@ The estimation of $R_t$ is based on the smoothed daily case count. As suggest by
 ![original_smoothed](https://raw.githubusercontent.com/maxscheijen/rt-live-netherlands/master/figures/original_smoothed.svg)
 
 <div class="alert alert-warning">
-  <strong>Note: </strong> All credit for developing this model goes to    Systrom et al. {% cite rtlive2020 %}. They did all the hard work. I simply applied their insights, research, and model to estimate the real-time $R_t$ in the Netherlands.
+  <strong>Note: </strong> All credit for developing this model goes to Systrom et al. {% cite rtlive2020 %}. They did all the hard work. I simply applied their insights, research, and model to estimate the real-time $R_t$ in the Netherlands.
 </div>
 
 Later on, Systrom et al.'s {% cite rtlive2020 %} developed a more complex Bayesian model that uses the positive test rate and <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo" target="_blank">MCMC</a> sampling to estimate $R_t$, as seen on <a href="https://rt.live" target="_blank">rt.live</a>. The positive test rate is a more useful measure because the number of raw positive tests is influenced by how many people are tested. The more you test, the more positive cases you will find. Therefore making test positive rate more informative.
