@@ -337,7 +337,7 @@ h1 { font-size: 26px !important; }
 
 h2 { font-size: 23px !important; margin-top: 15px !important; }
 
-h3 { font-size: 20px !important; margin-top: 15px !important; margin-bottom: 0px !important; }
+h3 { font-size: 19px !important; margin-top: 15px !important; margin-bottom: 0px !important; }
 
 ul h3 { margin-top: 0px !important; color: #2a7ae2 !important; }
 
@@ -346,6 +346,8 @@ h4 { font-size: 16px !important; margin-top: 15px !important; }
 .post-meta { font-size: 11px; }
 
 .post-header { margin-bottom: 15px; }
+
+p { text-align: justify; }
 
 article a { text-decoration: underline; }
 
