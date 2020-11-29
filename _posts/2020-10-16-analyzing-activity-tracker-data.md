@@ -15,15 +15,15 @@ Let's first take a look at the most basic levels of activity tracking, the step 
 
 Let's resample the step data from minute level measurements to hourly level measurements. This takes me from 261184 samples to 8688 samples, making the data less noisy. The distribution of hourly steps can be seen in the plot below. As expected, most 1 hourly steps fall into the bin containing 0 steps per hour. This can be explained, by the hours I sleep and, I do not take any strides. Furthermore, most of my time during the day I spend behind a desk, and I don't make many movements.
 
-![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_5_0.svg)
+![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_5_0.png)
 
 This makes me question if my step behavior changed over time? Let's plot a time series of my step data. Resampling to hourly data is not enough because there just t too many samples. Therefore I chose to resample to daily data. This makes it also easier to see trends. Gaussian smoothing also makes it easier to see trends, making the data less noisy. I use a window size of seven, which basically smooths data to weeks. The plot below displays the time-series step count over the last year. There is an upwards trend from early March to the middle of June, which can be explained by the fact that I started running. Also, notice the bump around the start of September. This bump can be explained by my holiday in which I walked a lot.
 
-![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_8_0.svg)
+![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_8_0.png)
 
 After looking at the less fine-grained data, let's take a look at the minute level data. We take the average step count data every minute over all the days in the year and visualize it. Let's also plot the overall mean step count every minute over the year. See the graph below for a visualization of this data. Notice something strange? There is a large bump around minute 50 every hour. There is a clear explanation for this bump. The Fitbit Charge 3 gives a vibrating notification every 10 minutes before the hour if you haven't taken 250 steps that specific our. This notification clearly gets me to move, making me change my behavior.
 
-![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_11_0.svg)
+![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_11_0.png)
 
 ## Heart rate
 
@@ -31,11 +31,11 @@ As earlier stated, the activity tracker also measures heart rate. The heart rate
 
 Because of the fine-grained data, I again resample the data to minutes. Let's make somewhat the same plot as we did with steps. However, instead of minute data, we use hourly data. This gives us a matrix of size 365x24. The data is plotted in the graph below.  Notice the lower heart rate during the night, which is understandable when sleeping.
 
-![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_14_0.svg)
+![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_14_0.png)
 
 Did my average heart rate change over time? The plot below displays that my mean daily hearth rate did not really change over time. Note this is not my resting heart rate.
 
-![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_17_0.svg)
+![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_17_0.png)
 
 ## Calories burned
 
@@ -43,13 +43,13 @@ The tracker estimates the calories burned using the basal metabolic rate (BMR). 
 
 Let's look at the relationship between calories burned and heart rate. The graph below displays a scatter plot with the heart rate and calories every 30 minutes. There is some small linear relationship between the number of steps and burned calories. However, the strength of the relationship is less than I suspected.
 
-![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_21_0.svg)
+![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_21_0.png)
 
 ## Sleep
 
 The tracker also measures sleep. The sleep score helps you understand your sleep each night. This allows us to see trends in sleep patterns. Getting a night of good high-quality sleep can have a positive impact on energy, activity, mood, and weight. The tracker calculates your sleep score is based on your heart rate, the time you spend awake or restless, and your sleep stages. My first instinct is that when someone spends more time in deep sleep, the higher the overall sleep score. Let's explore this. Below we see the relationship between the number of deep sleep minutes and Sleep score. Furthermore, the plot also displays the distribution of deep sleep minutes and sleep scores.
 
-![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_25_0.svg)
+![svg]({{ site.url }}/assets/img/2020-10-16-analyzing-activity-tracker-data_25_0.png)
 
 Because the time I spend in deep sleep doesn't seem to be highly correlated with sleep score, I try to answer the a different question: which sleep-related measurement is mostly correlated with a high sleep score? The plot below displays the correlation between all the different features and sleep scores.
 
