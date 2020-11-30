@@ -373,4 +373,8 @@ tr, td, th { white-space: nowrap; overflow: hidden; font-size: 13px !important; 
 
 blockquote { color: #333; background-color: aliceblue; border-left: none; padding: 15px; font-size: 14px; font-style: initial !important; }
 
+summary { padding-bottom: 15px; }
+
+details { padding: 0px 15px; }
+
 /*# sourceMappingURL=style.css.map */
