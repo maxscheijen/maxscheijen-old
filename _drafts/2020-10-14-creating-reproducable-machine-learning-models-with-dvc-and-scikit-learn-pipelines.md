@@ -13,7 +13,7 @@ Often reproducibility is only seen as necessary in scientific or academic work. 
 
 Before discussing reproducibility in the machine learning context, we need to define the concept. Reproducibility refers to the re-doing of computations or the re-doing of experiments {% cite fidler_2018 %}. Being able to reproduce experiments is one of the pillars on which the scientific method is built. When building machine learning models, we are doing a lot of experiments. But what does reproducibility mean in the context of machine learning or data science?
 
-> **Reproducibility** in machine learning is the ability to exactly duplicate a model in a later stage, given the same data as input. 
+> **Reproducibility** in machine learning is the ability to exactly duplicate a model in a later stage, given the same data as input.
 
 We want the ability to go back to an earlier version of our machine learning system. Then retrain our model, which then produces the same output predictions as we first trained the model, on the same test data {% cite galli_2020 %}.
 
@@ -51,7 +51,6 @@ Samiullah states in a blog post about productizing machine learning models: "Per
 
 So, creating reproducible machine learning systems is challenging because it relies on data to build, in addition to the often stochastic nature of these systems. If we want to create reproducible machine learning systems from the start, what are the most important parts we need to take into account? Let's take a closer look at the main components of a machine learning system: code, data, and models.
 
-
 ## Reproducible components of Machine Learning Systems
 
 Before discussing the main components of machine learning systems, I need to highlight the importance of **software versions**. Controlling the software used to create machine learning systems may be the easiest part of the pipeline, especially when using open-source software. Always record the version of the software or software package you use in the most detailed manner. For example, record the python version you used (3.7.2) and the version of scikit-learn you used to create the model. Sometimes default parameters change between versions. This can result in a possible different machine learning model and output on the same data.
@@ -64,14 +63,13 @@ Let's first discuss the code component of our pipeline. This is the most likely 
 
 The data component of the pipeline becomes more challenging. We need to keep a record of the data we used to train our machine learning model. If the dataset on which the model has trained changes creating the same model at a later stage is often not possible. We need a way to keep track of all the changes in the dataset, so we use the same dataset containing the same information to recreate or retrain our model. A perfect solution has yet to become available. However, I think at this moment, Data Version Control (DVC) has the most potential. DVC is basically git for data and model files. It allows to version control your datasets.
 
-
-### Model 
+### Model
 
 In addition to the data, we also need a way to version the model. Often machine learning models require randomness for training. Basically, we need a way to record how the model was trained. This randomness can cause slight differences when we want to reproduce a model. Even though predictions would not vary much, it is advised to some random seed if possible. This ensures a better reproducible model. Also, keep track of your hyper-parameters, these can influence how your model behaves. However but also keep track of transformations we made to the data. Often transformations are learned. For example, the mean and the standard deviation used normalization or scale the data depends on the underlying data. If we use ensemble methods, we need to record the structure of the ensemble. Often this can be done by versioning the code.
 
 <!-- In addition to the data, we also need a way to version the model. Basically, we need a way to record how the model was trained. This not only means that we record the hyper-parameters of the model, but also keep track of transformations we made to the data. For example, the mean and the standard deviation used normalization or scale the data depends on the underlying data.
 
-- Model provenance refers to the record of how a model was trained. This includes the order of the features, the applied feature transformations (e.g. standardization), the hyperparameters of the algorithm, and the trained model itself. If the model is an ensemble of submodels, then the structure of the ensemble must be saved (Sugimura & Hartl). 
+- Model provenance refers to the record of how a model was trained. This includes the order of the features, the applied feature transformations (e.g. standardization), the hyperparameters of the algorithm, and the trained model itself. If the model is an ensemble of submodels, then the structure of the ensemble must be saved (Sugimura & Hartl).
 
 - The machine learning algorithms themselves also cause significant challenges to reproducibility. Similarly to some instances of feature creation, certain machine learning models require randomness for training. Common examples of this scenario include tree ensembles, cross validation, and neural networks. Tree ensembles require random feature and data extraction, cross validation relies on random data partitions, and neural networks use randomness to initialize their weights. The randomness causes slight differences between models, even ones with the same training data; these models then won’t meet the requirements of reproducibility (Soledad Galli).
 
