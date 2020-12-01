@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Why you should be using of Scikit-learn Pipelines | Max Scheijen</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Why you should be using of Scikit-learn Pipelines" />
+<meta name="author" content="Max Scheijen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In my opinion, pipelines in scikit-learn are one of the most useful things in the library. They allow you to sequentially apply a list of transformers and a final estimator to your data. Furthermore, they can be used in cross-validation. This ensures that data transformations within the cross-validation loop are only fitted on the training data. This prevents data leakage and better generalization on the test dataset or in production. Pipelines can also be used in a grid or random search for the best hyperparameters. However, this is not limited to model parameters. We can also search for the best data transformations hyper-parameters (imputation with the median or the mean) in conjunction with the model hyper-parameters." />
+<meta property="og:description" content="In my opinion, pipelines in scikit-learn are one of the most useful things in the library. They allow you to sequentially apply a list of transformers and a final estimator to your data. Furthermore, they can be used in cross-validation. This ensures that data transformations within the cross-validation loop are only fitted on the training data. This prevents data leakage and better generalization on the test dataset or in production. Pipelines can also be used in a grid or random search for the best hyperparameters. However, this is not limited to model parameters. We can also search for the best data transformations hyper-parameters (imputation with the median or the mean) in conjunction with the model hyper-parameters." />
+<link rel="canonical" href="maxscheijen.github.io/2020-12-01-introduction-to-scikit-learn-pipeline-transformers" />
+<meta property="og:url" content="maxscheijen.github.io/2020-12-01-introduction-to-scikit-learn-pipeline-transformers" />
+<meta property="og:site_name" content="Max Scheijen" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-12-01T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Why you should be using of Scikit-learn Pipelines" />
+<meta name="twitter:site" content="@maxscheijen" />
+<meta name="twitter:creator" content="@Max Scheijen" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-12-01-introduction-to-scikit-learn-pipeline-transformers","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-12-01-introduction-to-scikit-learn-pipeline-transformers"},"datePublished":"2020-12-01T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"In my opinion, pipelines in scikit-learn are one of the most useful things in the library. They allow you to sequentially apply a list of transformers and a final estimator to your data. Furthermore, they can be used in cross-validation. This ensures that data transformations within the cross-validation loop are only fitted on the training data. This prevents data leakage and better generalization on the test dataset or in production. Pipelines can also be used in a grid or random search for the best hyperparameters. However, this is not limited to model parameters. We can also search for the best data transformations hyper-parameters (imputation with the median or the mean) in conjunction with the model hyper-parameters.","headline":"Why you should be using of Scikit-learn Pipelines","dateModified":"2020-12-01T00:00:00+01:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
+</head>
+<body>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+        }
+      });
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Max Scheijen</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a>
+            <a class="page-link" href="https://twitter.com/maxscheijen" target="_blank">Twitter</a>
+            <a class="page-link" href="https://github.com/maxscheijen" target="_blank">Github</a>
+            <a class="page-link" href="/feed.xml" target="_blank">Subscribe</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Why you should be using of Scikit-learn Pipelines</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2020-12-01T00:00:00+01:00" itemprop="datePublished">
+        Dec 1, 2020
+      </time>
+      <span>• 
+
+  
+    7 min read
+  
+
+</span>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Max Scheijen</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>In my opinion, pipelines in scikit-learn are one of the most useful things in the library. They allow you to sequentially apply a list of transformers and a final estimator to your data. Furthermore, they can be used in cross-validation. This ensures that data transformations within the cross-validation loop are only fitted on the training data. This prevents data leakage and better generalization on the test dataset or in production. Pipelines can also be used in a  grid or random search for the best hyperparameters. However, this is not limited to model parameters. We can also search for the best data transformations hyper-parameters (imputation with the median or the mean) in conjunction with the model hyper-parameters.</p>
+
+<p>However, in this post, I look at the fundamentals of the pipeline. We focus on implementing scikit-learn transformers and custom transformers into a scikit-learn pipeline. How do we apply different transformations to different datatypes or features? After implementing this, we can save the entire data pipeline (data transformations and the estimator) into a single artifact. This is great when we want to use the model in production because we need to deal with one file.</p>
+
+<p>We use a house pricing <a href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques" target="_blank">dataset</a> from kaggle for demonstrating the</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="c1"># Load data
+</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"train.csv"</span><span class="p">)</span>
+
+<span class="c1"># Features and target select
+</span><span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">"SalePrice"</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">"SalePrice"</span><span class="p">]</span>
+
+<span class="c1"># Splitting
+</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+                                                    <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Display first two rows of features
+</span><span class="n">X_train</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Id</th>
+      <th>MSSubClass</th>
+      <th>MSZoning</th>
+      <th>LotFrontage</th>
+      <th>LotArea</th>
+      <th>Street</th>
+      <th>Alley</th>
+      <th>LotShape</th>
+      <th>LandContour</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>922</td>
+      <td>90</td>
+      <td>RL</td>
+      <td>67.0</td>
+      <td>8777</td>
+      <td>Pave</td>
+      <td>NaN</td>
+      <td>Reg</td>
+      <td>Lvl</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="pipelines">Pipelines</h2>
+
+<p>Scikit-learn’s pipeline object expects a list of steps. These steps need to be tuples containing a name and a scikit-learn transformer (name, transform). Let’s first create a simple pipeline that fills missing numerical values with the mean. This can be done with the <code class="language-plaintext highlighter-rouge">SimpleImputer()</code> class from scikit-learn.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+
+<span class="c1"># Numerical single transformer pipelinen
+</span><span class="n">num_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"num_imputer"</span><span class="p">,</span>  <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">"mean"</span><span class="p">)),</span>
+<span class="p">])</span>
+
+<span class="c1"># Fit numerical transformer pipeline
+</span><span class="n">num_pipeline</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">[[</span><span class="s">"LotFrontage"</span><span class="p">]])</span>
+
+<span class="c1"># Display first five transformed rows
+</span><span class="n">num_pipeline</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">[[</span><span class="s">"LotFrontage"</span><span class="p">]])[:</span><span class="mi">5</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array<span class="o">([[</span>80.        <span class="o">]</span>,
+       <span class="o">[</span>60.        <span class="o">]</span>,
+       <span class="o">[</span>70.21063608],
+       <span class="o">[</span>21.        <span class="o">]</span>,
+       <span class="o">[</span>70.21063608]]<span class="o">)</span>
+</code></pre></div></div>
+
+<p>In the preceding code block, we created a pipeline that imputes numerical values and fills them with the mean. The pipeline object can be used to fit and transform data just as you are used to when using a single transformer.</p>
+
+<p>Let us now chain two transformers together into a single pipeline object. For example, after imputing the missing data and filling it with the mean, we want to scale the data between 0 and 1. We can use the <code class="language-plaintext highlighter-rouge">MinMaxScaler()</code> to do this scaling.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
+
+<span class="c1"># Numerical multi transformer pipeline
+</span><span class="n">num_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"num_imputer"</span><span class="p">,</span>  <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">"mean"</span><span class="p">)),</span>
+  <span class="p">(</span><span class="s">"scaler"</span><span class="p">,</span> <span class="n">MinMaxScaler</span><span class="p">(</span><span class="n">feature_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="p">])</span>
+
+<span class="c1"># Fit numerical transformer pipeline
+</span><span class="n">num_pipeline</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">[[</span><span class="s">"LotFrontage"</span><span class="p">]])</span>
+
+<span class="c1"># Display first five transformed rows
+</span><span class="n">num_pipeline</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">[[</span><span class="s">"LotFrontage"</span><span class="p">]])[:</span><span class="mi">5</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array<span class="o">([[</span>0.20205479],
+       <span class="o">[</span>0.13356164],
+       <span class="o">[</span>0.16852958],
+       <span class="o">[</span>0.        <span class="o">]</span>,
+       <span class="o">[</span>0.16852958]]<span class="o">)</span>
+</code></pre></div></div>
+
+<p>We have now chained to transformers together and can be fitted on the training data and transform testing data. We can also serialize this entire pipeline if we want to use it later in production.</p>
+
+<h2 id="datatypes-and-pipeline-transformers">Datatypes and Pipeline Transformers</h2>
+
+<p>Until this point, we only transformed numerical data. How do we deal with a table containing columns with numerical values and columns containing categorical data? Do we need several separate pipelines? This can become complicated quickly. However, scikit-learn provides a nice and simple solution to this problem: the column transformer. This transformer can apply different preprocessing and feature extraction pipelines to different subsets of features. Meaning that we can use other preprocessing steps to transform the numerical data than the transformations used to process the categorical data.</p>
+
+<p>So how do we do this? First, we create a pipeline for numerical data transformers. These transformers will be applied linearly (the order that the transformation steps are implemented). Secondly, we create a transformation pipeline for categorical data. We can now use the ColumnTransformer(), which takes a list of transformers as tuples (name, transformer pipeline, and the columns to transform) and apply the transformations.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.compose</span> <span class="kn">import</span> <span class="n">ColumnTransformer</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span>
+
+<span class="c1"># Pipeline of numerical transformers
+</span><span class="n">num_transformer_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"num_imputer"</span><span class="p">,</span>  <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">"mean"</span><span class="p">)),</span>
+  <span class="p">(</span><span class="s">"scaler"</span><span class="p">,</span> <span class="n">MinMaxScaler</span><span class="p">(</span><span class="n">feature_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="p">])</span>
+
+<span class="c1"># Pipeline of categorical transformers
+</span><span class="n">cat_transformer_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"cat_imputer"</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">"most_frequent"</span><span class="p">)),</span>
+  <span class="p">(</span><span class="s">"encoder"</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s">"ignore"</span><span class="p">))</span>
+<span class="p">])</span>
+
+<span class="c1"># Create preprocessing pipeline
+</span><span class="n">preprocessors</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span><span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"num_transformer"</span><span class="p">,</span> <span class="n">num_transformer_pipeline</span><span class="p">,</span> <span class="p">[</span><span class="s">"LotFrontage"</span><span class="p">]),</span>
+  <span class="p">(</span><span class="s">"cat_transformer"</span><span class="p">,</span> <span class="n">cat_transformer_pipeline</span><span class="p">,</span> <span class="p">[</span><span class="s">"Street"</span><span class="p">,</span> <span class="s">"Alley"</span><span class="p">]),</span>
+<span class="p">])</span>
+
+<span class="c1"># Fit transformer pipeline
+</span><span class="n">preprocessors</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="c1"># Display first three transformed rows
+</span><span class="n">preprocessors</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array<span class="o">([[</span>0.20205479, 0., 1., 1., 0.],
+       <span class="o">[</span>0.13356164, 0., 1., 1., 0.],
+       <span class="o">[</span>0.16852958, 0., 1., 1., 0.]]<span class="o">)</span>
+</code></pre></div></div>
+
+<p>As you can see in the diagram, we have two transformer pipelines that are combined into a single pipeline object. The numerical transformer pipeline is applied to the <code class="language-plaintext highlighter-rouge">LotFrontage</code> column of the table. In parallel, the categorical transformer pipeline is applied to the <code class="language-plaintext highlighter-rouge">Street</code> and <code class="language-plaintext highlighter-rouge">Alley</code> columns. Basically, we can create data processing pipelines for every individual feature in our dataset.</p>
+
+<p>However, we do not necessarily need to specify the columns to transform. We can select them automatically using <code class="language-plaintext highlighter-rouge">make_column_selector()</code>. This class can select columns based on the data type or the column name.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.compose</span> <span class="kn">import</span> <span class="n">make_column_selector</span>
+
+<span class="c1"># Create preprocessing pipeline
+</span><span class="n">preprocessors</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span><span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"num_transformer"</span><span class="p">,</span> <span class="n">num_transformer_pipeline</span><span class="p">,</span> <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s">"number"</span><span class="p">)),</span>
+  <span class="p">(</span><span class="s">"cat_transformer"</span><span class="p">,</span> <span class="n">cat_transformer_pipeline</span><span class="p">,</span> <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s">"category"</span><span class="p">)),</span>
+<span class="p">])</span>
+
+<span class="c1"># Fit transformer pipeline
+</span><span class="n">preprocessors</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="c1"># Display first transformed row
+</span><span class="n">preprocessors</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array<span class="o">([</span>0.17683345, 0.23529412, 0.20205479, 0.05204609, 0.66666667,
+       0.42857143, 0.93478261, 0.85      , 0.1075    , 0.06396173,
+       0.        , 0.25770548, 0.15761047, 0.14433226, 0.44284188,
+       0.        , 0.27467973, 0.        , 0.        , 0.66666667,
+       0.5       , 0.375     , 0.5       , 0.41666667, 0.33333333,
+       0.91818182, 0.5       , 0.3977433 , 0.        , 0.17550274,
+       0.        , 0.48228346, 0.        , 0.        , 0.        ,
+       0.36363636, 0.5       <span class="o">])</span>
+</code></pre></div></div>
+
+<p>In the preceding code block, we use the make_column_selector to only include select all the numerical (“number”) columns and then to select all the categorical columns (“category”). This automates selecting the columns and applying the different transformations to the data. This single pipeline can be serialized. This makes it easy to use data transformers in production because we only need to load the preprocessing pipeline to call <code class="language-plaintext highlighter-rouge">transform()</code> to process the new data.</p>
+
+<p>To complete the pipeline, you can add an estimator to the end of the pipeline. This is done by creating another pipeline instance where you combine the data processing pipeline with an estimator.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="c1"># Preprocessing transformers and estimator
+</span><span class="n">regressor_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"preprocessors"</span><span class="p">,</span> <span class="n">preprocessors</span><span class="p">),</span>
+  <span class="p">(</span><span class="s">"regressor"</span><span class="p">,</span> <span class="n">LinearRegression</span><span class="p">())</span>
+<span class="p">])</span>
+
+<span class="c1"># Fit full pipeline
+</span><span class="n">regressor_pipeline</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<style>div.sk-top-container {color: black;background-color: white;}div.sk-toggleable {background-color: white;}label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.2em 0.3em;box-sizing: border-box;text-align: center;}div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}div.sk-estimator {font-family: monospace;background-color: #f0f8ff;margin: 0.25em 0.25em;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;}div.sk-estimator:hover {background-color: #d4ebff;}div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 2em;bottom: 0;left: 50%;}div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;}div.sk-item {z-index: 1;}div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;}div.sk-parallel-item {display: flex;flex-direction: column;position: relative;background-color: white;}div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}div.sk-parallel-item:only-child::after {width: 0;}div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0.2em;box-sizing: border-box;padding-bottom: 0.1em;background-color: white;position: relative;}div.sk-label label {font-family: monospace;font-weight: bold;background-color: white;display: inline-block;line-height: 1.2em;}div.sk-label-container {position: relative;z-index: 2;text-align: center;}div.sk-container {display: inline-block;position: relative;}</style>
+<div class="sk-top-container"><div class="sk-container"><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="3ada28d2-9f9d-4747-b84b-2b3935a05b09" type="checkbox" /><label class="sk-toggleable__label" for="3ada28d2-9f9d-4747-b84b-2b3935a05b09">Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[('preprocessors',
+                 ColumnTransformer(transformers=[('num_transformer',
+                                                  Pipeline(steps=[('num_imputer',
+                                                                   SimpleImputer()),
+                                                                  ('scaler',
+                                                                   MinMaxScaler())]),
+                                                  &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf269080&gt;),
+                                                 ('cat_transformer',
+                                                  Pipeline(steps=[('cat_imputer',
+                                                                   SimpleImputer(strategy='most_frequent')),
+                                                                  ('freq_encoder',
+                                                                   FrequencyEncoding())]),
+                                                  &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf2694e0&gt;)])),
+                ('regressor', LinearRegression())])</pre></div></div></div><div class="sk-serial"><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="46b2e558-1ceb-451c-a530-1810bd9ad332" type="checkbox" /><label class="sk-toggleable__label" for="46b2e558-1ceb-451c-a530-1810bd9ad332">preprocessors: ColumnTransformer</label><div class="sk-toggleable__content"><pre>ColumnTransformer(transformers=[('num_transformer',
+                                 Pipeline(steps=[('num_imputer',
+                                                  SimpleImputer()),
+                                                 ('scaler', MinMaxScaler())]),
+                                 &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf269080&gt;),
+                                ('cat_transformer',
+                                 Pipeline(steps=[('cat_imputer',
+                                                  SimpleImputer(strategy='most_frequent')),
+                                                 ('freq_encoder',
+                                                  FrequencyEncoding())]),
+                                 &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf2694e0&gt;)])</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="e04c479c-097f-44f8-a132-5b7116ba0c35" type="checkbox" /><label class="sk-toggleable__label" for="e04c479c-097f-44f8-a132-5b7116ba0c35">num_transformer</label><div class="sk-toggleable__content"><pre>&lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf269080&gt;</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="a75d2ab2-63b5-432e-a8b8-23a45aa9b97d" type="checkbox" /><label class="sk-toggleable__label" for="a75d2ab2-63b5-432e-a8b8-23a45aa9b97d">SimpleImputer</label><div class="sk-toggleable__content"><pre>SimpleImputer()</pre></div></div></div><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="eda15b36-473d-4286-906e-355404dfe7cb" type="checkbox" /><label class="sk-toggleable__label" for="eda15b36-473d-4286-906e-355404dfe7cb">MinMaxScaler</label><div class="sk-toggleable__content"><pre>MinMaxScaler()</pre></div></div></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="30d295dc-85d3-4c31-a6b7-0ea3accfcc2a" type="checkbox" /><label class="sk-toggleable__label" for="30d295dc-85d3-4c31-a6b7-0ea3accfcc2a">cat_transformer</label><div class="sk-toggleable__content"><pre>&lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf2694e0&gt;</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="67f85d13-d04a-48ff-8fea-b164f9caec8d" type="checkbox" /><label class="sk-toggleable__label" for="67f85d13-d04a-48ff-8fea-b164f9caec8d">SimpleImputer</label><div class="sk-toggleable__content"><pre>SimpleImputer(strategy='most_frequent')</pre></div></div></div><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="d5fd5490-02cc-4a6c-92f2-61aee83033ee" type="checkbox" /><label class="sk-toggleable__label" for="d5fd5490-02cc-4a6c-92f2-61aee83033ee">FrequencyEncoding</label><div class="sk-toggleable__content"><pre>FrequencyEncoding()</pre></div></div></div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="2fc1ceec-4e54-4c70-9c5e-2d419785507a" type="checkbox" /><label class="sk-toggleable__label" for="2fc1ceec-4e54-4c70-9c5e-2d419785507a">LinearRegression</label><div class="sk-toggleable__content"><pre>LinearRegression()</pre></div></div></div></div></div></div></div>
+
+<p>This pipeline (transformers + estimators) can be used in all kinds of cross-validation or random/grid searches.</p>
+
+<h2 id="custom-transformers">Custom Transformers</h2>
+
+<p>Even though scikit-learn provides a lot of transformers, you may find that you want to transform your data in a way that is not implemented in scikit-learn. In this case, you need to create a custom transformer. This can be done by inheriting from the BaseEstimator and TransformerMixin classes. You only need to implement your own <code class="language-plaintext highlighter-rouge">fit()</code> and <code class="language-plaintext highlighter-rouge">transform()</code> or <code class="language-plaintext highlighter-rouge">predict()</code> methods.</p>
+
+<p>Let’s say we want to do frequency encoding. Meaning that every category in a categorical column is encoded using the frequency of occurring. Meaning “Category A” occupies 20% of all the values in a categorical variable, the “Category A” should equal 0.2. When we encounter a category, we have not seen during training, we set the frequency of occurrence of this particular category to 0.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+
+<span class="k">class</span> <span class="nc">FrequencyEncoding</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="c1"># Initialize frequency dictionary
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">freq_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">normalize</span> <span class="o">=</span> <span class="n">normalize</span>
+
+  <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c1"># Check if X is pandas Series or DataFrame
+</span>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">):</span>
+
+    <span class="c1"># Convert to numpy array
+</span>      <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">.</span><span class="n">values</span>
+
+    <span class="c1"># 1. Loop over columns
+</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">.</span><span class="n">T</span><span class="p">):</span>
+
+      <span class="c1"># 2. Calculate (normalized) frequeny
+</span>      <span class="n">counts</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">(</span><span class="n">feature</span><span class="p">).</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">normalize</span><span class="p">).</span><span class="n">to_dict</span><span class="p">()</span>
+
+      <span class="c1"># 3. Store counts in dictionary
+</span>      <span class="bp">self</span><span class="p">.</span><span class="n">freq_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
+
+    <span class="k">return</span> <span class="bp">self</span>
+  
+  <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="c1"># Check if X is pandas Series or DataFrame
+</span>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">):</span>
+
+      <span class="c1"># Convert to numpy array
+</span>      <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">.</span><span class="n">values</span>
+
+    <span class="c1"># 4. Loop over columns
+</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">.</span><span class="n">T</span><span class="p">):</span>
+
+      <span class="c1"># 5. Convert to series
+</span>      <span class="n">series</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">(</span><span class="n">X</span><span class="p">.</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+      <span class="c1"># 6. Check if values in frequency dict
+</span>      <span class="n">condition</span> <span class="o">=</span> <span class="n">series</span><span class="p">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">freq_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+      <span class="c1"># 7. If present fill with value, otherwise with zero
+</span>      <span class="n">encoded_valuess</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">series</span><span class="p">.</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">freq_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
+
+      <span class="c1"># 8. Store back into original matrix
+</span>      <span class="n">X</span><span class="p">.</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoded_valuess</span>
+
+    <span class="k">return</span> <span class="n">X</span>
+</code></pre></div></div>
+
+<p>The code above implements a frequency encoder. Because we used the base classes from scikit-learn this transformer can now be used in a pipeline.</p>
+
+<details>
+  <summary><b>A more detailed explanation about the implementation of the FrequencyEncoder</b></summary>
+
+  <b>Training</b>:
+  <ol>
+    <li>Loop over the columns of the table/matrix.</li>
+    <li>Count the values/categories in the columns and if we want to normalize them.</li>
+    <li>Store values/categories and corresponding (normalized) frequency into a dictionary with the categories as keys and the count as values.</li>
+  </ol>
+
+  <b>Transforming</b>:
+  <ol>
+    <li>Loop over the columns of the table/matrix.</li>
+    <li>Convert array to pandas series.</li>
+    <li>Check if the categories in the column are in the dictionary (keys).</li>
+    <li>If they are, map the values in the directory to the corresponding category (keys) to the values in the column. If the category value is not in the dictionary, fill with a 0.</li>
+    <li>Store the encoded values back into the original matrix.</li>
+  </ol>
+
+</details>
+
+<p>Let’s use the same pipeline we did earlier. However, now we switch out the OneHotEncoder out for our own custom FrequenyEncoder.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Pipeline of numerical transformers
+</span><span class="n">num_transformer_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"num_imputer"</span><span class="p">,</span>  <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">"mean"</span><span class="p">)),</span>
+  <span class="p">(</span><span class="s">"scaler"</span><span class="p">,</span> <span class="n">MinMaxScaler</span><span class="p">(</span><span class="n">feature_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="p">])</span>
+
+<span class="c1"># Pipeline of categorical transformers
+</span><span class="n">cat_transformer_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"cat_imputer"</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">"most_frequent"</span><span class="p">)),</span>
+  <span class="p">(</span><span class="s">"freq_encoder"</span><span class="p">,</span> <span class="n">FrequencyEncoding</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span> <span class="c1"># Custom transformer
+</span><span class="p">])</span>
+
+<span class="c1"># Create preprocessing pipeline
+</span><span class="n">preprocessors</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span><span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"num_transformer"</span><span class="p">,</span> <span class="n">num_transformer_pipeline</span><span class="p">,</span> <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s">"number"</span><span class="p">)),</span>
+  <span class="p">(</span><span class="s">"cat_transformer"</span><span class="p">,</span> <span class="n">cat_transformer_pipeline</span><span class="p">,</span> <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s">"category"</span><span class="p">)),</span>
+<span class="p">])</span>
+
+<span class="n">regressor_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+  <span class="p">(</span><span class="s">"preprocessors"</span><span class="p">,</span> <span class="n">preprocessors</span><span class="p">),</span>
+  <span class="p">(</span><span class="s">"regressor"</span><span class="p">,</span> <span class="n">LinearRegression</span><span class="p">())</span>
+<span class="p">])</span>
+
+<span class="n">regressor_pipeline</span>
+</code></pre></div></div>
+
+<style>div.sk-top-container {color: black;background-color: white;}div.sk-toggleable {background-color: white;}label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.2em 0.3em;box-sizing: border-box;text-align: center;}div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}div.sk-estimator {font-family: monospace;background-color: #f0f8ff;margin: 0.25em 0.25em;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;}div.sk-estimator:hover {background-color: #d4ebff;}div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 2em;bottom: 0;left: 50%;}div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;}div.sk-item {z-index: 1;}div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;}div.sk-parallel-item {display: flex;flex-direction: column;position: relative;background-color: white;}div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}div.sk-parallel-item:only-child::after {width: 0;}div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0.2em;box-sizing: border-box;padding-bottom: 0.1em;background-color: white;position: relative;}div.sk-label label {font-family: monospace;font-weight: bold;background-color: white;display: inline-block;line-height: 1.2em;}div.sk-label-container {position: relative;z-index: 2;text-align: center;}div.sk-container {display: inline-block;position: relative;}</style>
+<div class="sk-top-container"><div class="sk-container"><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="0aaaf3b3-a2aa-4b8c-bce5-abfd560f9d98" type="checkbox" /><label class="sk-toggleable__label" for="0aaaf3b3-a2aa-4b8c-bce5-abfd560f9d98">Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[('preprocessors',
+                 ColumnTransformer(transformers=[('num_transformer',
+                                                  Pipeline(steps=[('num_imputer',
+                                                                   SimpleImputer()),
+                                                                  ('scaler',
+                                                                   MinMaxScaler())]),
+                                                  &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf246550&gt;),
+                                                 ('cat_transformer',
+                                                  Pipeline(steps=[('cat_imputer',
+                                                                   SimpleImputer(strategy='most_frequent')),
+                                                                  ('freq_encoder',
+                                                                   FrequencyEncoding())]),
+                                                  &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf246438&gt;)])),
+                ('regressor', LinearRegression())])</pre></div></div></div><div class="sk-serial"><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="83adda71-82df-4f23-ae82-059964bc9fc5" type="checkbox" /><label class="sk-toggleable__label" for="83adda71-82df-4f23-ae82-059964bc9fc5">preprocessors: ColumnTransformer</label><div class="sk-toggleable__content"><pre>ColumnTransformer(transformers=[('num_transformer',
+                                 Pipeline(steps=[('num_imputer',
+                                                  SimpleImputer()),
+                                                 ('scaler', MinMaxScaler())]),
+                                 &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf246550&gt;),
+                                ('cat_transformer',
+                                 Pipeline(steps=[('cat_imputer',
+                                                  SimpleImputer(strategy='most_frequent')),
+                                                 ('freq_encoder',
+                                                  FrequencyEncoding())]),
+                                 &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf246438&gt;)])</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="850e239f-c05e-451e-9a92-cd95bdaf4b30" type="checkbox" /><label class="sk-toggleable__label" for="850e239f-c05e-451e-9a92-cd95bdaf4b30">num_transformer</label><div class="sk-toggleable__content"><pre>&lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf246550&gt;</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="19ecaa5d-3401-4eaf-ab44-7defdea82764" type="checkbox" /><label class="sk-toggleable__label" for="19ecaa5d-3401-4eaf-ab44-7defdea82764">SimpleImputer</label><div class="sk-toggleable__content"><pre>SimpleImputer()</pre></div></div></div><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="db97b2af-0dc7-4fd6-a362-da429dab6e6a" type="checkbox" /><label class="sk-toggleable__label" for="db97b2af-0dc7-4fd6-a362-da429dab6e6a">MinMaxScaler</label><div class="sk-toggleable__content"><pre>MinMaxScaler()</pre></div></div></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="7dedf6a5-fd39-44ee-b964-8a08801aa6a1" type="checkbox" /><label class="sk-toggleable__label" for="7dedf6a5-fd39-44ee-b964-8a08801aa6a1">cat_transformer</label><div class="sk-toggleable__content"><pre>&lt;sklearn.compose._column_transformer.make_column_selector object at 0x7f9ebf246438&gt;</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="cd18fe76-26f3-4ec2-a646-7434a4c40944" type="checkbox" /><label class="sk-toggleable__label" for="cd18fe76-26f3-4ec2-a646-7434a4c40944">SimpleImputer</label><div class="sk-toggleable__content"><pre>SimpleImputer(strategy='most_frequent')</pre></div></div></div><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="94f6caef-53b3-45a8-8401-1c2364070a89" type="checkbox" /><label class="sk-toggleable__label" for="94f6caef-53b3-45a8-8401-1c2364070a89">FrequencyEncoding</label><div class="sk-toggleable__content"><pre>FrequencyEncoding()</pre></div></div></div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="1b74220c-0f5d-4965-abdd-41e55a6e920e" type="checkbox" /><label class="sk-toggleable__label" for="1b74220c-0f5d-4965-abdd-41e55a6e920e">LinearRegression</label><div class="sk-toggleable__content"><pre>LinearRegression()</pre></div></div></div></div></div></div></div>
+
+<p>We can now fit the entire pipeline containing our custom transformer on the dataset. Furthermore, we can use the <code class="language-plaintext highlighter-rouge">score()</code> method or perform cross-validation. We can also persist the entire pipeline to make use of it later on in production. We only need to load our persisted model pipeline, and call the <code class="language-plaintext highlighter-rouge">predict()</code> method on new data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">regressor_pipeline</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">regressor_pipeline</span><span class="p">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">f"R-squared: </span><span class="si">{</span><span class="n">score</span><span class="p">:.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>R-squared: 0.81
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In this post, I wanted the demonstrate how powerful and useful the scikit-learn’s Pipeline API is. We can easily implement any data transformation or model estimator leveraging some scikit-learn base functionality. We can then persist the whole data transforming and modeling pipeline into a single serialized artifact, which is great when we want to use this model later on.</p>
+
+<p>The pipeline demonstrated in this post is really simple, and only scratches the surface of what is possible when using them.</p>
+
+  </div><a class="u-url" href="/2020-12-01-introduction-to-scikit-learn-pipeline-transformers" hidden></a>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+    </div>
+  </div>
+
+</footer></body>
+
+</html>

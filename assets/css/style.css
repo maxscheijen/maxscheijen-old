@@ -371,10 +371,18 @@ tr, td, th { white-space: nowrap; overflow: hidden; font-size: 13px !important; 
 
 .post-list li { border-bottom: grey !important; }
 
-blockquote { color: #333; background-color: aliceblue; border-left: none; padding: 15px; font-size: 14px; font-style: initial !important; }
+blockquote { color: #333; background-color: #f5f5f5; border-left: none; padding: 15px; font-size: 14px; font-style: initial !important; }
 
 summary { padding-bottom: 15px; }
 
 details { padding: 0px 15px; }
+
+div.sk-container { padding-bottom: 15px; width: 100%; }
+
+label.sk-toggleable__label { background-color: #f5f5f5; }
+
+.highlighter-rouge .highlight { background-color: #f5f5f5 !important; }
+
+code { background-color: #f5f5f5 !important; }
 
 /*# sourceMappingURL=style.css.map */
