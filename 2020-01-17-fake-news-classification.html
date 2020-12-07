@@ -10,8 +10,8 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!" />
 <meta property="og:description" content="With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!" />
-<link rel="canonical" href="maxscheijen.github.io/2020-01-17-fake-news-classification" />
-<meta property="og:url" content="maxscheijen.github.io/2020-01-17-fake-news-classification" />
+<link rel="canonical" href="http://localhost:4000/2020-01-17-fake-news-classification" />
+<meta property="og:url" content="http://localhost:4000/2020-01-17-fake-news-classification" />
 <meta property="og:site_name" content="Max Scheijen" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-01-17T00:00:00+01:00" />
@@ -20,9 +20,9 @@
 <meta name="twitter:site" content="@maxscheijen" />
 <meta name="twitter:creator" content="@Max Scheijen" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-01-17-fake-news-classification","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-01-17-fake-news-classification"},"datePublished":"2020-01-17T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!","headline":"Fake news Classification with Logistic Regression","dateModified":"2020-01-17T00:00:00+01:00","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","url":"http://localhost:4000/2020-01-17-fake-news-classification","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020-01-17-fake-news-classification"},"datePublished":"2020-01-17T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!","headline":"Fake news Classification with Logistic Regression","dateModified":"2020-01-17T00:00:00+01:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" />
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Max Scheijen" />
 </head>
 <body>
     <script type="text/x-mathjax-config">
@@ -50,7 +50,7 @@
         <a class="page-link" href="https://twitter.com/maxscheijen" target="_blank">Twitter</a>
         <a class="page-link" href="https://github.com/maxscheijen" target="_blank">Github</a>
         <a class="page-link" href="/feed.xml" target="_blank">Subscribe</a>
-        <a class="page-link" href="/archive" target="_blank">Archive</a></div>
+        <a class="page-link" href="/archive">Archive</a></div>
     </nav></div>
 </header><main class="page-content" aria-label="Content">
       <div class="wrapper">
@@ -175,7 +175,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 <span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="s">"Label count per target class"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_10_0.png" alt="png" /></p>
+<p><img src="http://localhost:4000/assets/img/2020-01-17-fake-news-classification_10_0.png" alt="png" /></p>
 
 <p>The figure above shows an even distribution of labels. There are as many fake as real news articles in our datasets. We set our baseline at around 50%. Anything above this score will be better than random guessing.</p>
 
@@ -326,7 +326,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 <span class="n">g</span><span class="p">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">""</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_17_0.png" alt="png" /></p>
+<p><img src="http://localhost:4000/assets/img/2020-01-17-fake-news-classification_17_0.png" alt="png" /></p>
 
 <p>The plot confirms  our summary statistics inferences. Real news articles seem to have a greater word count than fake news articles. We could do statistical tests to confirm this. Further exploration could look at the number of characters or number of sentences. We, however, are going to do this but look at readability.</p>
 
@@ -486,7 +486,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 <span class="n">plt</span><span class="p">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_24_0.png" alt="png" /></p>
+<p><img src="http://localhost:4000/assets/img/2020-01-17-fake-news-classification_24_0.png" alt="png" /></p>
 
 <h2 id="3-train-and-validation---first-model">3. Train and Validation  &amp; First Model</h2>
 
