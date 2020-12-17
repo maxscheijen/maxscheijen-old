@@ -10,8 +10,8 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="I have been wearing a Fitbit Charge 3 activity tracker for a little more than a year now. This fitness tracker does more than simply track steps. Because of its additional sensors, it can track more movements and physical attributes. For example, it also tracks distance, keeps track of your heart rate, the calories you burn during the day, and tracks your sleep." />
 <meta property="og:description" content="I have been wearing a Fitbit Charge 3 activity tracker for a little more than a year now. This fitness tracker does more than simply track steps. Because of its additional sensors, it can track more movements and physical attributes. For example, it also tracks distance, keeps track of your heart rate, the calories you burn during the day, and tracks your sleep." />
-<link rel="canonical" href="http://localhost:4000/2020-10-16-analyzing-activity-tracker-data" />
-<meta property="og:url" content="http://localhost:4000/2020-10-16-analyzing-activity-tracker-data" />
+<link rel="canonical" href="maxscheijen.github.io/2020-10-16-analyzing-activity-tracker-data" />
+<meta property="og:url" content="maxscheijen.github.io/2020-10-16-analyzing-activity-tracker-data" />
 <meta property="og:site_name" content="Max Scheijen" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-10-16T00:00:00+02:00" />
@@ -20,9 +20,18 @@
 <meta name="twitter:site" content="@maxscheijen" />
 <meta name="twitter:creator" content="@Max Scheijen" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","url":"http://localhost:4000/2020-10-16-analyzing-activity-tracker-data","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020-10-16-analyzing-activity-tracker-data"},"datePublished":"2020-10-16T00:00:00+02:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"I have been wearing a Fitbit Charge 3 activity tracker for a little more than a year now. This fitness tracker does more than simply track steps. Because of its additional sensors, it can track more movements and physical attributes. For example, it also tracks distance, keeps track of your heart rate, the calories you burn during the day, and tracks your sleep.","headline":"Analyzing activity tracker data","dateModified":"2020-10-16T00:00:00+02:00","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-10-16-analyzing-activity-tracker-data","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-10-16-analyzing-activity-tracker-data"},"datePublished":"2020-10-16T00:00:00+02:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"I have been wearing a Fitbit Charge 3 activity tracker for a little more than a year now. This fitness tracker does more than simply track steps. Because of its additional sensors, it can track more movements and physical attributes. For example, it also tracks distance, keeps track of your heart rate, the calories you burn during the day, and tracks your sleep.","headline":"Analyzing activity tracker data","dateModified":"2020-10-16T00:00:00+02:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Max Scheijen" />
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
 </head>
 <body>
     <script type="text/x-mathjax-config">
@@ -83,15 +92,15 @@
 
 <p>Let’s resample the step data from minute level measurements to hourly level measurements. This takes me from 261184 samples to 8688 samples, making the data less noisy. The distribution of hourly steps can be seen in the plot below. As expected, most 1 hourly steps fall into the bin containing 0 steps per hour. This can be explained, by the hours I sleep and, I do not take any strides. Furthermore, most of my time during the day I spend behind a desk, and I don’t make many movements.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020-10-16-analyzing-activity-tracker-data_5_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_5_0.png" alt="png" /></p>
 
 <p>This makes me question if my step behavior changed over time? Let’s plot a time series of my step data. Resampling to hourly data is not enough because there just t too many samples. Therefore I chose to resample to daily data. This makes it also easier to see trends. Gaussian smoothing also makes it easier to see trends, making the data less noisy. I use a window size of seven, which basically smooths data to weeks. The plot below displays the time-series step count over the last year. There is an upwards trend from early March to the middle of June, which can be explained by the fact that I started running. Also, notice the bump around the start of September. This bump can be explained by my holiday in which I walked a lot.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020-10-16-analyzing-activity-tracker-data_8_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_8_0.png" alt="png" /></p>
 
 <p>After looking at the less fine-grained data, let’s take a look at the minute level data. We take the average step count data every minute over all the days in the year and visualize it. Let’s also plot the overall mean step count every minute over the year. See the graph below for a visualization of this data. Notice something strange? There is a large bump around minute 50 every hour. There is a clear explanation for this bump. The Fitbit Charge 3 gives a vibrating notification every 10 minutes before the hour if you haven’t taken 250 steps that specific our. This notification clearly gets me to move, making me change my behavior.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020-10-16-analyzing-activity-tracker-data_11_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_11_0.png" alt="png" /></p>
 
 <h2 id="heart-rate">Heart rate</h2>
 
@@ -99,11 +108,11 @@
 
 <p>Because of the fine-grained data, I again resample the data to minutes. Let’s make somewhat the same plot as we did with steps. However, instead of minute data, we use hourly data. This gives us a matrix of size 365x24. The data is plotted in the graph below.  Notice the lower heart rate during the night, which is understandable when sleeping.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020-10-16-analyzing-activity-tracker-data_14_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_14_0.png" alt="png" /></p>
 
 <p>Did my average heart rate change over time? The plot below displays that my mean daily hearth rate did not really change over time. Note this is not my resting heart rate.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020-10-16-analyzing-activity-tracker-data_17_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_17_0.png" alt="png" /></p>
 
 <h2 id="calories-burned">Calories burned</h2>
 
@@ -111,17 +120,17 @@
 
 <p>Let’s look at the relationship between calories burned and heart rate. The graph below displays a scatter plot with the heart rate and calories every 30 minutes. There is some small linear relationship between the number of steps and burned calories. However, the strength of the relationship is less than I suspected.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020-10-16-analyzing-activity-tracker-data_21_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_21_0.png" alt="png" /></p>
 
 <h2 id="sleep">Sleep</h2>
 
 <p>The tracker also measures sleep. The sleep score helps you understand your sleep each night. This allows us to see trends in sleep patterns. Getting a night of good high-quality sleep can have a positive impact on energy, activity, mood, and weight. The tracker calculates your sleep score is based on your heart rate, the time you spend awake or restless, and your sleep stages. My first instinct is that when someone spends more time in deep sleep, the higher the overall sleep score. Let’s explore this. Below we see the relationship between the number of deep sleep minutes and Sleep score. Furthermore, the plot also displays the distribution of deep sleep minutes and sleep scores.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020-10-16-analyzing-activity-tracker-data_25_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_25_0.png" alt="png" /></p>
 
 <p>Because the time I spend in deep sleep doesn’t seem to be highly correlated with sleep score, I try to answer the a different question: which sleep-related measurement is mostly correlated with a high sleep score? The plot below displays the correlation between all the different features and sleep scores.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020-10-16-analyzing-activity-tracker-data_29_0.svg" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_29_0.svg" alt="png" /></p>
 
 <p>Most of these measures make sense in influence the sleep score negatively or positively. Duration or minutes of sleep has a positive impact, as do most of the sleep-related measurements. The measurements related to being awake correlate hurt the sleep score.</p>
 

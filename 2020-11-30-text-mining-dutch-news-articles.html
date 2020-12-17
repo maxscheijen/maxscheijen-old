@@ -10,8 +10,8 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="In this article, I analyze Dutch news articles. I gathered the news articles by scraping them from the NOS website. The NOS is one of the organizations of the public broadcasting system in the Netherlands and established in the Media Act. Its task is to provide the media supply for the national public media service in the field of news, sports, and events. The NOS is also one of the biggest online news websites in the Netherlands." />
 <meta property="og:description" content="In this article, I analyze Dutch news articles. I gathered the news articles by scraping them from the NOS website. The NOS is one of the organizations of the public broadcasting system in the Netherlands and established in the Media Act. Its task is to provide the media supply for the national public media service in the field of news, sports, and events. The NOS is also one of the biggest online news websites in the Netherlands." />
-<link rel="canonical" href="http://localhost:4000/2020-11-30-text-mining-dutch-news-articles" />
-<meta property="og:url" content="http://localhost:4000/2020-11-30-text-mining-dutch-news-articles" />
+<link rel="canonical" href="maxscheijen.github.io/2020-11-30-text-mining-dutch-news-articles" />
+<meta property="og:url" content="maxscheijen.github.io/2020-11-30-text-mining-dutch-news-articles" />
 <meta property="og:site_name" content="Max Scheijen" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-11-30T00:00:00+01:00" />
@@ -20,9 +20,18 @@
 <meta name="twitter:site" content="@maxscheijen" />
 <meta name="twitter:creator" content="@Max Scheijen" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","url":"http://localhost:4000/2020-11-30-text-mining-dutch-news-articles","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020-11-30-text-mining-dutch-news-articles"},"datePublished":"2020-11-30T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"In this article, I analyze Dutch news articles. I gathered the news articles by scraping them from the NOS website. The NOS is one of the organizations of the public broadcasting system in the Netherlands and established in the Media Act. Its task is to provide the media supply for the national public media service in the field of news, sports, and events. The NOS is also one of the biggest online news websites in the Netherlands.","headline":"Text Mining Dutch News Articles","dateModified":"2020-11-30T00:00:00+01:00","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-11-30-text-mining-dutch-news-articles","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-11-30-text-mining-dutch-news-articles"},"datePublished":"2020-11-30T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"In this article, I analyze Dutch news articles. I gathered the news articles by scraping them from the NOS website. The NOS is one of the organizations of the public broadcasting system in the Netherlands and established in the Media Act. Its task is to provide the media supply for the national public media service in the field of news, sports, and events. The NOS is also one of the biggest online news websites in the Netherlands.","headline":"Text Mining Dutch News Articles","dateModified":"2020-11-30T00:00:00+01:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Max Scheijen" />
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
 </head>
 <body>
     <script type="text/x-mathjax-config">
@@ -89,11 +98,11 @@
 
 <p>The first thing to look at is the article count over time between 2010 and 2020. To get a less stochastic article count, I decided to group them by months over time. From 2010 to the middle of 2016, the monthly article count increased from around 1000 to a little more than 2000. After 2016 we see a downwards trend in the number of monthly articles published to 1100 in 2020.</p>
 
-<p><img src="http://localhost:4000/assets/img/nos_analysis_blog_files/nos_analysis_blog_9_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_9_0.png" alt="png" /></p>
 
 <p>More interesting is probably to look at the change of monthly article count when we split the articles based on category. If we look at the absolute count over time, we see the same trend as the overall article count. This is most likely caused by the “Binnenland” (domestic) and the “Buitenland” (foreign) categories, which display the same tends.</p>
 
-<p><img src="http://localhost:4000/assets/img/nos_analysis_blog_files/nos_analysis_blog_11_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_11_0.png" alt="png" /></p>
 
 <p>Therefore I choose to normalize the counts based on category. The second graph shows the share of a news category in the total number of articles in a specific month. For example, there is a large bump in the domestic news share (and drop in foreign news) in the first quarter of 2020 caused by the initial Coronavirus outbreak. In contrast, most of 2011, the foreign news articles were most prevalent, probably caused by the start of the <a href="https://en.wikipedia.org/wiki/Arab_Spring" target="_blank">Arabic Spring</a>, the <a href="https://en.wikipedia.org/wiki/Killing_of_Osama_bin_Laden" target="_blank"> capture of Osama Binladen</a>, and the <a href="https://en.wikipedia.org/wiki/2011_Norway_attacks" target="_blank">terrorist attacks in Norway</a>.</p>
 
@@ -103,11 +112,11 @@
 
 <p>Let us first look at the overall word count of all the articles published by the NOS. As expected, the word count of the article is heavily right-skewed (when used for modeling probably better to use the log). Also, the word count of the title is more normally distributed, which is expected.</p>
 
-<p><img src="http://localhost:4000/assets/img/nos_analysis_blog_files/nos_analysis_blog_15_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_15_0.png" alt="png" /></p>
 
 <p>Tech and Culture &amp; Media have the highest median word count. This makes sense to me. These articles are often less time-dependent. Meaning that their publishing is less dependent on the daily news cycle. They are still relevant at a later moment than political news. This suggests that writers have more time to write these articles, can incorporate more detail, leading to longer pieces. The “remarkable” and “regional news” category have the lowest median news count. This is expected most of these articles report small news events, leading to shorter pieces.</p>
 
-<p><img src="http://localhost:4000/assets/img/nos_analysis_blog_files/nos_analysis_blog_18_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_18_0.png" alt="png" /></p>
 
 <h2 id="readability">Readability</h2>
 
@@ -175,23 +184,23 @@
 
 <p>The articles categorized as Foreign, Politics, Tech, and Economy are the heardest to read with a readability score below 60, which is about 10th to 12th-grade-level reading.  So somewhat hard to read.  Categories “remarkable news”, “regional news” and “culture &amp; media” are easier to read with a score above 60. However, the overall median scores are not that different across categories.</p>
 
-<p><img src="http://localhost:4000/assets/img/nos_analysis_blog_files/nos_analysis_blog_22_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_22_0.png" alt="png" /></p>
 
 <h2 id="sentiment-polarity-and-subjectivity">Sentiment, Polarity, and Subjectivity</h2>
 
 <p>Let us look at the sentiment of the texts. Are they positive or negative? Furthermore, we can also analyze the texts for subjectivity. When looking at all the articles together, we see that most of the news articles are neutral in their polarity. Most of the articles hover somewhere in the middle between subjective and objective in their subjectivity measure.</p>
 
-<p><img src="http://localhost:4000/assets/img/nos_analysis_blog_files/nos_analysis_blog_26_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_26_0.png" alt="png" /></p>
 
 <p>Even if we parse the articles by news category we do not see many differences in the distributions of polarity and subjectivity scores.</p>
 
-<p><img src="http://localhost:4000/assets/img/nos_analysis_blog_files/nos_analysis_blog_28_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_28_0.png" alt="png" /></p>
 
 <h2 id="informative-words">Informative words</h2>
 
 <p>We can use TF-IDF, short for term frequency-inverse document frequency, to extract the most informative words out of every article. TF-IDF  is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus. In this case, I removed stop words, because most of the time they don’t contain any useful information. Also, I ignore terms that appear in less than 0.5% of the documents. Let’s see if what the most informative terms are in the news articles in every category.</p>
 
-<p><img src="http://localhost:4000/assets/img/nos_analysis_blog_files/nos_analysis_blog_35_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_35_0.png" alt="png" /></p>
 
 <p>The TF-IDF result is pretty interesting. For example, we can see that the most informative terms (translated to English) in articles categorized as politics are: chamber, cabinet, minister, political parties (VVD, PvdA, CDA, D66), member of parliament, and secretary of state. All words that are associated with politics. The most informative terms in the economic news articles are also associated with the economy. For example, percent, Euro, company, billion, banks, and money. In the Royal Family category, we see that the words King, Queen, Prince, Princess, Willem (the king’s first name) are all highly informative.</p>
 

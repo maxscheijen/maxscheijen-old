@@ -10,8 +10,8 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="One of the things I find really difficult when finishing a Data Science or Machine Learning project is that I don’t really have a feeling of completeness. We have a great performing model, but what to do now? We can make interacting with our trained model more enjoyable. Therefore, today we are going to build a really simple web app to deploy a trained deep learning image classifier. This application allows the user to submit their own image and get a classification label back." />
 <meta property="og:description" content="One of the things I find really difficult when finishing a Data Science or Machine Learning project is that I don’t really have a feeling of completeness. We have a great performing model, but what to do now? We can make interacting with our trained model more enjoyable. Therefore, today we are going to build a really simple web app to deploy a trained deep learning image classifier. This application allows the user to submit their own image and get a classification label back." />
-<link rel="canonical" href="http://localhost:4000/2020-03-29-image-classification-web-app-using-fastai" />
-<meta property="og:url" content="http://localhost:4000/2020-03-29-image-classification-web-app-using-fastai" />
+<link rel="canonical" href="maxscheijen.github.io/2020-03-29-image-classification-web-app-using-fastai" />
+<meta property="og:url" content="maxscheijen.github.io/2020-03-29-image-classification-web-app-using-fastai" />
 <meta property="og:site_name" content="Max Scheijen" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-03-29T00:00:00+01:00" />
@@ -20,9 +20,18 @@
 <meta name="twitter:site" content="@maxscheijen" />
 <meta name="twitter:creator" content="@Max Scheijen" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","url":"http://localhost:4000/2020-03-29-image-classification-web-app-using-fastai","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020-03-29-image-classification-web-app-using-fastai"},"datePublished":"2020-03-29T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"One of the things I find really difficult when finishing a Data Science or Machine Learning project is that I don’t really have a feeling of completeness. We have a great performing model, but what to do now? We can make interacting with our trained model more enjoyable. Therefore, today we are going to build a really simple web app to deploy a trained deep learning image classifier. This application allows the user to submit their own image and get a classification label back.","headline":"Image Classifcation Web App using Flask and fastai","dateModified":"2020-03-29T00:00:00+01:00","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-03-29-image-classification-web-app-using-fastai","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-03-29-image-classification-web-app-using-fastai"},"datePublished":"2020-03-29T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"One of the things I find really difficult when finishing a Data Science or Machine Learning project is that I don’t really have a feeling of completeness. We have a great performing model, but what to do now? We can make interacting with our trained model more enjoyable. Therefore, today we are going to build a really simple web app to deploy a trained deep learning image classifier. This application allows the user to submit their own image and get a classification label back.","headline":"Image Classifcation Web App using Flask and fastai","dateModified":"2020-03-29T00:00:00+01:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Max Scheijen" />
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
+<script>
+  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-154715114-1');
+</script>
+
 </head>
 <body>
     <script type="text/x-mathjax-config">
@@ -83,7 +92,7 @@
 
 <p>The web app looks like this:</p>
 
-<p><img src="http://localhost:4000/assets/img/2020–03-29-image-classification-web-app-using-fastai_app.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_app.png" alt="png" /></p>
 
 <h2 id="image-classification-model">Image Classification Model</h2>
 
@@ -172,7 +181,7 @@
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="p">.</span><span class="n">show_batch</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 </code></pre></div></div>
 
-<p><img src="http://localhost:4000/assets/img/2020–03-29-image-classification-web-app-using-fastai_21_0.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_21_0.png" alt="png" /></p>
 
 <p>Everything seems to be working out nicely!</p>
 
@@ -214,7 +223,7 @@ Min numerical gradient: 3.02E-03
 Min loss divided by 10: 3.02E-02
 </code></pre></div></div>
 
-<p><img src="http://localhost:4000/assets/img/2020–03-29-image-classification-web-app-using-fastai_27_2.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_27_2.png" alt="png" /></p>
 
 <p>Our model doesn’t need to train for many epochs for us to asses its performance. We train our model for 6 epochs using the suggested learning rate. It’s performing okay. Make sure to also save this trained model, we don’t want to lose it!</p>
 
@@ -327,7 +336,7 @@ Min loss divided by 10: 3.02E-02
 <span class="n">Min</span> <span class="n">loss</span> <span class="n">divided</span> <span class="n">by</span> <span class="mi">10</span><span class="p">:</span> <span class="mf">2.29E-05</span>
 </code></pre></div></div>
 
-<p><img src="http://localhost:4000/assets/img/2020–03-29-image-classification-web-app-using-fastai_32_2.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_32_2.png" alt="png" /></p>
 
 <p>We now train the unfrozen model for 6 more epochs, 12 epochs in total. Also, make sure to save the second training stage of our model.</p>
 
@@ -538,11 +547,11 @@ Min loss divided by 10: 3.02E-02
 
 <p>We’re now ready to upload our own image and see what our models predict this clothing item is. I will test our app by uploading this photo of my sneakers.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020–03-29-image-classification-web-app-using-fastai_sample_image.jpeg" alt="jpg" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_sample_image.jpeg" alt="jpg" /></p>
 
 <p>Let’s make a prediction using our web app. The model predicts that these are “sports shoes”, which is correct. The image below shows our web app without any additional styling.</p>
 
-<p><img src="http://localhost:4000/assets/img/2020–03-29-image-classification-web-app-using-fastai_simple_app.png" alt="png" /></p>
+<p><img src="maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_simple_app.png" alt="png" /></p>
 
 <p>We now have a fully functional web app that can predict fashion items from an image. To make the app look like the example at the start of the post, you need to add some additional HTML and some CSS.</p>
 
