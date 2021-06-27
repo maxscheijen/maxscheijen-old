@@ -4,7 +4,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
 <title>Fake news Classification with Logistic Regression | Max Scheijen</title>
-<meta name="generator" content="Jekyll v4.1.1" />
+<meta name="generator" content="Jekyll v4.2.0" />
 <meta property="og:title" content="Fake news Classification with Logistic Regression" />
 <meta name="author" content="Max Scheijen" />
 <meta property="og:locale" content="en_US" />
@@ -20,18 +20,9 @@
 <meta name="twitter:site" content="@maxscheijen" />
 <meta name="twitter:creator" content="@Max Scheijen" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","url":"maxscheijen.github.io/2020-01-17-fake-news-classification","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-01-17-fake-news-classification"},"datePublished":"2020-01-17T00:00:00+01:00","author":{"@type":"Person","name":"Max Scheijen"},"description":"With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!","headline":"Fake news Classification with Logistic Regression","dateModified":"2020-01-17T00:00:00+01:00","@context":"https://schema.org"}</script>
+{"url":"maxscheijen.github.io/2020-01-17-fake-news-classification","headline":"Fake news Classification with Logistic Regression","dateModified":"2020-01-17T00:00:00+01:00","datePublished":"2020-01-17T00:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"maxscheijen.github.io/2020-01-17-fake-news-classification"},"author":{"@type":"Person","name":"Max Scheijen"},"description":"With the maturity of the internet, fake news has become much more common in recent years. Fake news is disinformation which is disguised as “real” news to influence public opinion. Can we use machine learning to classify news articles fake or real? Text contains a lot of information let’s investigate if we can use it!","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-154715114-1"></script>
-<script>
-  window['ga-disable-UA-154715114-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-154715114-1');
-</script>
-
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="maxscheijen.github.io/feed.xml" title="Max Scheijen" />
 </head>
 <body>
     <script type="text/x-mathjax-config">
@@ -184,7 +175,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 <span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="s">"Label count per target class"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_10_0.png" alt="png" /></p>
+<p><img src="https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_10_0.png" alt="png" /></p>
 
 <p>The figure above shows an even distribution of labels. There are as many fake as real news articles in our datasets. We set our baseline at around 50%. Anything above this score will be better than random guessing.</p>
 
@@ -335,7 +326,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 <span class="n">g</span><span class="p">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">""</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_17_0.png" alt="png" /></p>
+<p><img src="https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_17_0.png" alt="png" /></p>
 
 <p>The plot confirms  our summary statistics inferences. Real news articles seem to have a greater word count than fake news articles. We could do statistical tests to confirm this. Further exploration could look at the number of characters or number of sentences. We, however, are going to do this but look at readability.</p>
 
@@ -495,7 +486,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 <span class="n">plt</span><span class="p">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">);</span>
 </code></pre></div></div>
 
-<p><img src="maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_24_0.png" alt="png" /></p>
+<p><img src="https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_24_0.png" alt="png" /></p>
 
 <h2 id="3-train-and-validation---first-model">3. Train and Validation  &amp; First Model</h2>
 
@@ -866,7 +857,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 <span class="n">logreg</span><span class="p">.</span><span class="n">score</span><span class="p">(</span><span class="n">valid_features</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    0.9343434343434344
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.9343434343434344
 </code></pre></div></div>
 
 <p>The final testing score is 93.34% on the testing.</p>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="maxscheijen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="maxscheijen.github.io/" rel="alternate" type="text/html" /><updated>2020-12-17T15:49:01+01:00</updated><id>maxscheijen.github.io/feed.xml</id><title type="html">Max Scheijen</title><subtitle>Data Science and Machine Learning</subtitle><author><name>Max Scheijen</name><email>maxscheijen@gmail.com</email></author><entry><title type="html">Why you should be using of Scikit-learn Pipelines</title><link href="maxscheijen.github.io/2020-12-01-introduction-to-scikit-learn-pipeline-transformers" rel="alternate" type="text/html" title="Why you should be using of Scikit-learn Pipelines" /><published>2020-12-01T00:00:00+01:00</published><updated>2020-12-01T00:00:00+01:00</updated><id>maxscheijen.github.io/introduction-to-scikit-learn-pipeline-transformers</id><content type="html" xml:base="maxscheijen.github.io/2020-12-01-introduction-to-scikit-learn-pipeline-transformers">&lt;p&gt;In my opinion, pipelines in scikit-learn are one of the most useful things in the library. They allow you to sequentially apply a list of transformers and a final estimator to your data. Furthermore, they can be used in cross-validation. This ensures that data transformations within the cross-validation loop are only fitted on the training data. This prevents data leakage and better generalization on the test dataset or in production. Pipelines can also be used in a  grid or random search for the best hyperparameters. However, this is not limited to model parameters. We can also search for the best data transformations hyper-parameters (imputation with the median or the mean) in conjunction with the model hyper-parameters.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="maxscheijen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="maxscheijen.github.io/" rel="alternate" type="text/html" /><updated>2021-06-27T18:56:43+02:00</updated><id>maxscheijen.github.io/feed.xml</id><title type="html">Max Scheijen</title><subtitle>Data Science and Machine Learning</subtitle><author><name>Max Scheijen</name><email>maxscheijen@gmail.com</email></author><entry><title type="html">Why you should be using of Scikit-learn Pipelines</title><link href="maxscheijen.github.io/2020-12-01-introduction-to-scikit-learn-pipeline-transformers" rel="alternate" type="text/html" title="Why you should be using of Scikit-learn Pipelines" /><published>2020-12-01T00:00:00+01:00</published><updated>2020-12-01T00:00:00+01:00</updated><id>maxscheijen.github.io/introduction-to-scikit-learn-pipeline-transformers</id><content type="html" xml:base="maxscheijen.github.io/2020-12-01-introduction-to-scikit-learn-pipeline-transformers">&lt;p&gt;In my opinion, pipelines in scikit-learn are one of the most useful things in the library. They allow you to sequentially apply a list of transformers and a final estimator to your data. Furthermore, they can be used in cross-validation. This ensures that data transformations within the cross-validation loop are only fitted on the training data. This prevents data leakage and better generalization on the test dataset or in production. Pipelines can also be used in a  grid or random search for the best hyperparameters. However, this is not limited to model parameters. We can also search for the best data transformations hyper-parameters (imputation with the median or the mean) in conjunction with the model hyper-parameters.&lt;/p&gt;
 
 &lt;p&gt;However, in this post, I look at the fundamentals of the pipeline. We focus on implementing scikit-learn transformers and custom transformers into a scikit-learn pipeline. How do we apply different transformations to different datatypes or features? After implementing this, we can save the entire data pipeline (data transformations and the estimator) into a single artifact. This is great when we want to use the model in production because we need to deal with one file.&lt;/p&gt;
 
@@ -398,11 +398,11 @@
 
 &lt;p&gt;The first thing to look at is the article count over time between 2010 and 2020. To get a less stochastic article count, I decided to group them by months over time. From 2010 to the middle of 2016, the monthly article count increased from around 1000 to a little more than 2000. After 2016 we see a downwards trend in the number of monthly articles published to 1100 in 2020.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_9_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_9_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;More interesting is probably to look at the change of monthly article count when we split the articles based on category. If we look at the absolute count over time, we see the same trend as the overall article count. This is most likely caused by the “Binnenland” (domestic) and the “Buitenland” (foreign) categories, which display the same tends.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_11_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_11_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Therefore I choose to normalize the counts based on category. The second graph shows the share of a news category in the total number of articles in a specific month. For example, there is a large bump in the domestic news share (and drop in foreign news) in the first quarter of 2020 caused by the initial Coronavirus outbreak. In contrast, most of 2011, the foreign news articles were most prevalent, probably caused by the start of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Arab_Spring&quot; target=&quot;_blank&quot;&gt;Arabic Spring&lt;/a&gt;, the &lt;a href=&quot;https://en.wikipedia.org/wiki/Killing_of_Osama_bin_Laden&quot; target=&quot;_blank&quot;&gt; capture of Osama Binladen&lt;/a&gt;, and the &lt;a href=&quot;https://en.wikipedia.org/wiki/2011_Norway_attacks&quot; target=&quot;_blank&quot;&gt;terrorist attacks in Norway&lt;/a&gt;.&lt;/p&gt;
 
@@ -412,11 +412,11 @@
 
 &lt;p&gt;Let us first look at the overall word count of all the articles published by the NOS. As expected, the word count of the article is heavily right-skewed (when used for modeling probably better to use the log). Also, the word count of the title is more normally distributed, which is expected.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_15_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_15_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Tech and Culture &amp;amp; Media have the highest median word count. This makes sense to me. These articles are often less time-dependent. Meaning that their publishing is less dependent on the daily news cycle. They are still relevant at a later moment than political news. This suggests that writers have more time to write these articles, can incorporate more detail, leading to longer pieces. The “remarkable” and “regional news” category have the lowest median news count. This is expected most of these articles report small news events, leading to shorter pieces.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_18_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_18_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;readability&quot;&gt;Readability&lt;/h2&gt;
 
@@ -484,23 +484,23 @@
 
 &lt;p&gt;The articles categorized as Foreign, Politics, Tech, and Economy are the heardest to read with a readability score below 60, which is about 10th to 12th-grade-level reading.  So somewhat hard to read.  Categories “remarkable news”, “regional news” and “culture &amp;amp; media” are easier to read with a score above 60. However, the overall median scores are not that different across categories.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_22_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_22_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;sentiment-polarity-and-subjectivity&quot;&gt;Sentiment, Polarity, and Subjectivity&lt;/h2&gt;
 
 &lt;p&gt;Let us look at the sentiment of the texts. Are they positive or negative? Furthermore, we can also analyze the texts for subjectivity. When looking at all the articles together, we see that most of the news articles are neutral in their polarity. Most of the articles hover somewhere in the middle between subjective and objective in their subjectivity measure.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_26_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_26_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Even if we parse the articles by news category we do not see many differences in the distributions of polarity and subjectivity scores.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_28_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_28_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;informative-words&quot;&gt;Informative words&lt;/h2&gt;
 
 &lt;p&gt;We can use TF-IDF, short for term frequency-inverse document frequency, to extract the most informative words out of every article. TF-IDF  is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus. In this case, I removed stop words, because most of the time they don’t contain any useful information. Also, I ignore terms that appear in less than 0.5% of the documents. Let’s see if what the most informative terms are in the news articles in every category.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_35_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_35_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The TF-IDF result is pretty interesting. For example, we can see that the most informative terms (translated to English) in articles categorized as politics are: chamber, cabinet, minister, political parties (VVD, PvdA, CDA, D66), member of parliament, and secretary of state. All words that are associated with politics. The most informative terms in the economic news articles are also associated with the economy. For example, percent, Euro, company, billion, banks, and money. In the Royal Family category, we see that the words King, Queen, Prince, Princess, Willem (the king’s first name) are all highly informative.&lt;/p&gt;
 
@@ -519,15 +519,15 @@
 
 &lt;p&gt;Let’s resample the step data from minute level measurements to hourly level measurements. This takes me from 261184 samples to 8688 samples, making the data less noisy. The distribution of hourly steps can be seen in the plot below. As expected, most 1 hourly steps fall into the bin containing 0 steps per hour. This can be explained, by the hours I sleep and, I do not take any strides. Furthermore, most of my time during the day I spend behind a desk, and I don’t make many movements.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_5_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_5_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This makes me question if my step behavior changed over time? Let’s plot a time series of my step data. Resampling to hourly data is not enough because there just t too many samples. Therefore I chose to resample to daily data. This makes it also easier to see trends. Gaussian smoothing also makes it easier to see trends, making the data less noisy. I use a window size of seven, which basically smooths data to weeks. The plot below displays the time-series step count over the last year. There is an upwards trend from early March to the middle of June, which can be explained by the fact that I started running. Also, notice the bump around the start of September. This bump can be explained by my holiday in which I walked a lot.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_8_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_8_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;After looking at the less fine-grained data, let’s take a look at the minute level data. We take the average step count data every minute over all the days in the year and visualize it. Let’s also plot the overall mean step count every minute over the year. See the graph below for a visualization of this data. Notice something strange? There is a large bump around minute 50 every hour. There is a clear explanation for this bump. The Fitbit Charge 3 gives a vibrating notification every 10 minutes before the hour if you haven’t taken 250 steps that specific our. This notification clearly gets me to move, making me change my behavior.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_11_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_11_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;heart-rate&quot;&gt;Heart rate&lt;/h2&gt;
 
@@ -535,11 +535,11 @@
 
 &lt;p&gt;Because of the fine-grained data, I again resample the data to minutes. Let’s make somewhat the same plot as we did with steps. However, instead of minute data, we use hourly data. This gives us a matrix of size 365x24. The data is plotted in the graph below.  Notice the lower heart rate during the night, which is understandable when sleeping.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_14_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_14_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Did my average heart rate change over time? The plot below displays that my mean daily hearth rate did not really change over time. Note this is not my resting heart rate.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_17_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_17_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;calories-burned&quot;&gt;Calories burned&lt;/h2&gt;
 
@@ -547,17 +547,17 @@
 
 &lt;p&gt;Let’s look at the relationship between calories burned and heart rate. The graph below displays a scatter plot with the heart rate and calories every 30 minutes. There is some small linear relationship between the number of steps and burned calories. However, the strength of the relationship is less than I suspected.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_21_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_21_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;sleep&quot;&gt;Sleep&lt;/h2&gt;
 
 &lt;p&gt;The tracker also measures sleep. The sleep score helps you understand your sleep each night. This allows us to see trends in sleep patterns. Getting a night of good high-quality sleep can have a positive impact on energy, activity, mood, and weight. The tracker calculates your sleep score is based on your heart rate, the time you spend awake or restless, and your sleep stages. My first instinct is that when someone spends more time in deep sleep, the higher the overall sleep score. Let’s explore this. Below we see the relationship between the number of deep sleep minutes and Sleep score. Furthermore, the plot also displays the distribution of deep sleep minutes and sleep scores.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_25_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_25_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Because the time I spend in deep sleep doesn’t seem to be highly correlated with sleep score, I try to answer the a different question: which sleep-related measurement is mostly correlated with a high sleep score? The plot below displays the correlation between all the different features and sleep scores.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_29_0.svg&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-10-16-analyzing-activity-tracker-data_29_0.svg&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Most of these measures make sense in influence the sleep score negatively or positively. Duration or minutes of sleep has a positive impact, as do most of the sleep-related measurements. The measurements related to being awake correlate hurt the sleep score.&lt;/p&gt;</content><author><name>Max Scheijen</name></author><category term="data-science" /><category term="analysis" /><category term="statistics" /><summary type="html">I have been wearing a Fitbit Charge 3 activity tracker for a little more than a year now. This fitness tracker does more than simply track steps. Because of its additional sensors, it can track more movements and physical attributes. For example, it also tracks distance, keeps track of your heart rate, the calories you burn during the day, and tracks your sleep.</summary></entry><entry><title type="html">Estimating COVID-19’s $R_t$ in Real-Time for the Netherlands</title><link href="maxscheijen.github.io/2020-10-12-rt-live-netherlands" rel="alternate" type="text/html" title="Estimating COVID-19’s $R_t$ in Real-Time for the Netherlands" /><published>2020-10-12T00:00:00+02:00</published><updated>2020-10-12T00:00:00+02:00</updated><id>maxscheijen.github.io/rt-live-netherlands</id><content type="html" xml:base="maxscheijen.github.io/2020-10-12-rt-live-netherlands">&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Basic_reproduction_number#Effective_reproduction_number&quot; target=&quot;_blank&quot;&gt;effective reproduction number&lt;/a&gt; $R_t$ is a way to quantify how quickly a virus spreads and measures the number of people infected by one contagious person. In this post, I model the Dutch daily case count with a simple Bayesian model proposed by Systrom et al. &lt;a class=&quot;citation&quot; href=&quot;#rtlive2020&quot;&gt;[1]&lt;/a&gt; that allows us to estimate the $ R_t $ in real-time.&lt;/p&gt;
 
@@ -595,7 +595,7 @@
 
 &lt;p&gt;The web app looks like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_app.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_app.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;image-classification-model&quot;&gt;Image Classification Model&lt;/h2&gt;
 
@@ -684,7 +684,7 @@
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show_batch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;figsize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_21_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_21_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Everything seems to be working out nicely!&lt;/p&gt;
 
@@ -726,7 +726,7 @@ Min numerical gradient: 3.02E-03
 Min loss divided by 10: 3.02E-02
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_27_2.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_27_2.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Our model doesn’t need to train for many epochs for us to asses its performance. We train our model for 6 epochs using the suggested learning rate. It’s performing okay. Make sure to also save this trained model, we don’t want to lose it!&lt;/p&gt;
 
@@ -839,7 +839,7 @@ Min loss divided by 10: 3.02E-02
 &lt;span class=&quot;n&quot;&gt;Min&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;divided&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;2.29E-05&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_32_2.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_32_2.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We now train the unfrozen model for 6 more epochs, 12 epochs in total. Also, make sure to save the second training stage of our model.&lt;/p&gt;
 
@@ -1050,11 +1050,11 @@ Min loss divided by 10: 3.02E-02
 
 &lt;p&gt;We’re now ready to upload our own image and see what our models predict this clothing item is. I will test our app by uploading this photo of my sneakers.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_sample_image.jpeg&quot; alt=&quot;jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_sample_image.jpeg&quot; alt=&quot;jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Let’s make a prediction using our web app. The model predicts that these are “sports shoes”, which is correct. The image below shows our web app without any additional styling.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_simple_app.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_simple_app.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We now have a fully functional web app that can predict fashion items from an image. To make the app look like the example at the start of the post, you need to add some additional HTML and some CSS.&lt;/p&gt;
 
@@ -2187,14 +2187,14 @@ dtype: float64
 &lt;h2 id=&quot;academic-degrees&quot;&gt;Academic Degrees&lt;/h2&gt;
 &lt;p&gt;My first instinct is to analyze the count distribution between academic degrees. Netherlands has two general academic degrees. A bachelor degree and a master degree. The most bachelor degrees in take three years to obtain. An academic master’s degree is a one-year or two-year course (and in exceptional cases more than two years long).&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-02-19-academic-degree.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-02-19-academic-degree.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As the figure above displays, most students enroll in a master’s degree between 2014 and 2018.  However, if we take the bachelor’s degrees together with the “propedeuse bachelor” degree, which is obtained after completion of the first-year bachelor, this category becomes most frequent.&lt;/p&gt;
 
 &lt;h2 id=&quot;faculty-enrollment&quot;&gt;Faculty Enrollment&lt;/h2&gt;
 &lt;p&gt;A faculty is a division within a university comprising one subject area or a group of related subject areas. Let’s look at the differences of enrollment between faculties.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-02-19-enrollment-faculty.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-faculty.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The faculty “Gedrag en Maatschappij” (across all universities) has the most students enrolled between 2014 and 2018. Most Social and Behavioral Sciences are part of this faculty. As stated by &lt;a href=&quot;https://www.uva.nl/en/about-the-uva/organisation/faculties/faculty-of-social-and-behavioural-sciences/organisation-and-contact/organisation.html&quot; target=&quot;_blank&quot;&gt;The Faculty of Social and Behavioural Sciences of the University of Amsterdam&lt;/a&gt;:&lt;/p&gt;
 
@@ -2209,7 +2209,7 @@ Anthropology, Economics (sometimes), Political Science, Psychology and Sociology
 
 &lt;p&gt;We can, however, try to find out whether there have been changes in the number of enrollments over time. We do this by comparing the 2014 registrations with those of 2018.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-02-19-enrollment-faculty-overtime.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-faculty-overtime.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can see that almost all faculty enrollments increased between 2014 and 2018. The biggest absolute increases are for the “Techniek” like Engineering and Computer Science programs and “Natuur” like Physics, Biology and Chemistry programs. Both consist of so-called “exact” or “hard” sciences. There is a lot of focus to increase technical studies in the Netherlands. Which seems to be working!&lt;/p&gt;
 
@@ -2218,13 +2218,13 @@ Anthropology, Economics (sometimes), Political Science, Psychology and Sociology
 &lt;h2 id=&quot;enrollment-based-on-location-and-institution&quot;&gt;Enrollment based on location and institution&lt;/h2&gt;
 &lt;p&gt;Let’s now look at the number of enrollments based on the location. We have both city and province/state data. Not every province has a university. Therefore not all provinces will be represented in the graph below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-02-19-enrollment-province.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-province.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We see that both Zuid-Holland and Noord-Holland Universities have the most students enrolled. Both provinces also have the biggest populations what can be an explanation. Zuid-Holland as 3 universities and Noord-Holland has 2 universities.&lt;/p&gt;
 
 &lt;p&gt;Location can also be tied to the enrollment numbers for individual Universities.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-02-19-enrollment-university.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-university.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can see that the biggest enrollment universities are all located in the so-called “Randstad”. This is a metropolitan area that includes the four largest cities in the Netherlands: Amsterdam, Rotterdam, The Hague, and Utrecht.&lt;/p&gt;
 
@@ -2233,13 +2233,13 @@ Anthropology, Economics (sometimes), Political Science, Psychology and Sociology
 
 &lt;p&gt;The figure below displays the absolute ration of enrollments based on gender at universities in the Netherlands between 2014 and 2018.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-02-19-enrollment-gender-university.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-gender-university.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can see that at almost all universities women are in the majority. The only universities where men have a clear majority are technical universities.&lt;/p&gt;
 
 &lt;p&gt;Let’s look at the fields of study that have the biggest ratio of differences between men and women and vice versa. I excluded programs that have less than 100 enrollments over 4 years to keep some robustness.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-02-19-enrollment-gender-study.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-gender-study.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;sup&gt;* DPiEaCS (research): Developmental Psychopathology in Education and Child Studies (research)&lt;/sup&gt;&lt;br /&gt;
 &lt;sup&gt;* DaSiCaA (research): Development and Socialisation in Childhood and Adolescence (research)&lt;/sup&gt;&lt;/p&gt;
@@ -2897,7 +2897,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Label count per target class&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fontsize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_10_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_10_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The figure above shows an even distribution of labels. There are as many fake as real news articles in our datasets. We set our baseline at around 50%. Anything above this score will be better than random guessing.&lt;/p&gt;
 
@@ -3048,7 +3048,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_legend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_17_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_17_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The plot confirms  our summary statistics inferences. Real news articles seem to have a greater word count than fake news articles. We could do statistical tests to confirm this. Further exploration could look at the number of characters or number of sentences. We, however, are going to do this but look at readability.&lt;/p&gt;
 
@@ -3208,7 +3208,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_24_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_24_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;3-train-and-validation---first-model&quot;&gt;3. Train and Validation  &amp;amp; First Model&lt;/h2&gt;
 
@@ -3579,7 +3579,7 @@ REAL ARTICLE: U.S. Secretary of State John F. Kerry said Monday that he will sto
 &lt;span class=&quot;n&quot;&gt;logreg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;valid_features&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_valid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    0.9343434343434344
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;0.9343434343434344
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The final testing score is 93.34% on the testing.&lt;/p&gt;
