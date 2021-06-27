@@ -19,14 +19,14 @@ This post is structured in the following way: First, we investigate the distribu
 ## Academic Degrees
 My first instinct is to analyze the count distribution between academic degrees. Netherlands has two general academic degrees. A bachelor degree and a master degree. The most bachelor degrees in take three years to obtain. An academic master's degree is a one-year or two-year course (and in exceptional cases more than two years long).
 
-![png]({{ site.url }}/assets/img/2020-02-19-academic-degree.png)
+![png](https://maxscheijen.github.io/assets/img/2020-02-19-academic-degree.png)
 
 As the figure above displays, most students enroll in a master's degree between 2014 and 2018.  However, if we take the bachelor's degrees together with the "propedeuse bachelor" degree, which is obtained after completion of the first-year bachelor, this category becomes most frequent.
 
 ## Faculty Enrollment
 A faculty is a division within a university comprising one subject area or a group of related subject areas. Let's look at the differences of enrollment between faculties.
 
-![png]({{ site.url }}/assets/img/2020-02-19-enrollment-faculty.png)
+![png](https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-faculty.png)
 
 The faculty "Gedrag en Maatschappij" (across all universities) has the most students enrolled between 2014 and 2018. Most Social and Behavioral Sciences are part of this faculty. As stated by <a href="https://www.uva.nl/en/about-the-uva/organisation/faculties/faculty-of-social-and-behavioural-sciences/organisation-and-contact/organisation.html" target="_blank">The Faculty of Social and Behavioural Sciences of the University of Amsterdam</a>: 
 
@@ -39,7 +39,7 @@ There is a large shortage of teachers in the Netherlands. This figure shows that
 
 We can, however, try to find out whether there have been changes in the number of enrollments over time. We do this by comparing the 2014 registrations with those of 2018. 
 
-![png]({{ site.url }}/assets/img/2020-02-19-enrollment-faculty-overtime.png)
+![png](https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-faculty-overtime.png)
 
 We can see that almost all faculty enrollments increased between 2014 and 2018. The biggest absolute increases are for the "Techniek" like Engineering and Computer Science programs and "Natuur" like Physics, Biology and Chemistry programs. Both consist of so-called "exact" or "hard" sciences. There is a lot of focus to increase technical studies in the Netherlands. Which seems to be working! 
 
@@ -48,13 +48,13 @@ The only faculty that has a decrease in enrollments is the education faculty. Th
 ## Enrollment based on location and institution
 Let's now look at the number of enrollments based on the location. We have both city and province/state data. Not every province has a university. Therefore not all provinces will be represented in the graph below. 
 
-![png]({{ site.url }}/assets/img/2020-02-19-enrollment-province.png)
+![png](https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-province.png)
 
 We see that both Zuid-Holland and Noord-Holland Universities have the most students enrolled. Both provinces also have the biggest populations what can be an explanation. Zuid-Holland as 3 universities and Noord-Holland has 2 universities. 
 
 Location can also be tied to the enrollment numbers for individual Universities. 
 
-![png]({{ site.url }}/assets/img/2020-02-19-enrollment-university.png)
+![png](https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-university.png)
 
 We can see that the biggest enrollment universities are all located in the so-called "Randstad". This is a metropolitan area that includes the four largest cities in the Netherlands: Amsterdam, Rotterdam, The Hague, and Utrecht.
 
@@ -63,13 +63,13 @@ Another variable included in the dataset is gender. We'll look at ratios between
 
 The figure below displays the absolute ration of enrollments based on gender at universities in the Netherlands between 2014 and 2018. 
 
-![png]({{ site.url }}/assets/img/2020-02-19-enrollment-gender-university.png)
+![png](https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-gender-university.png)
 
 We can see that at almost all universities women are in the majority. The only universities where men have a clear majority are technical universities.
 
 Let's look at the fields of study that have the biggest ratio of differences between men and women and vice versa. I excluded programs that have less than 100 enrollments over 4 years to keep some robustness. 
 
-![png]({{ site.url }}/assets/img/2020-02-19-enrollment-gender-study.png)
+![png](https://maxscheijen.github.io/assets/img/2020-02-19-enrollment-gender-study.png)
 
 <sup>* DPiEaCS (research): Developmental Psychopathology in Education and Child Studies (research)</sup><br>
 <sup>* DaSiCaA (research): Development and Socialisation in Childhood and Adolescence (research)</sup>

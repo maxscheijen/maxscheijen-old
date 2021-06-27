@@ -111,7 +111,7 @@ sns.countplot(y ="label", data=news)
 plt.title("Label count per target class", fontsize=14);
 ```
 
-![png]({{ site.url }}/assets/img/2020-01-17-fake-news-classification_10_0.png)
+![png](https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_10_0.png)
 
 The figure above shows an even distribution of labels. There are as many fake as real news articles in our datasets. We set our baseline at around 50%. Anything above this score will be better than random guessing.
 
@@ -265,7 +265,7 @@ g.fig.suptitle("Word count distribution for Real and Fake News", y=1.05, size=14
 g.add_legend(title="");
 ```
 
-![png]({{ site.url }}/assets/img/2020-01-17-fake-news-classification_17_0.png)
+![png](https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_17_0.png)
 
 The plot confirms  our summary statistics inferences. Real news articles seem to have a greater word count than fake news articles. We could do statistical tests to confirm this. Further exploration could look at the number of characters or number of sentences. We, however, are going to do this but look at readability.
 
@@ -426,7 +426,7 @@ g.add_legend(title="")
 plt.xlim(0,100);
 ```
 
-![png]({{ site.url }}/assets/img/2020-01-17-fake-news-classification_24_0.png)
+![png](https://maxscheijen.github.io/assets/img/2020-01-17-fake-news-classification_24_0.png)
 
 ## 3. Train and Validation  & First Model
 
@@ -824,7 +824,7 @@ logreg.score(valid_features, y_valid)
 ```
 
 ```shell
-    0.9343434343434344
+0.9343434343434344
 ```
 
 The final testing score is 93.34% on the testing.

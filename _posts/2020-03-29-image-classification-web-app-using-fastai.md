@@ -15,7 +15,7 @@ After some CSS styling, the final web app looks something like this:
 
 The web app looks like this:
 
-![png]({{ site.url }}/assets/img/2020–03-29-image-classification-web-app-using-fastai_app.png)
+![png](https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_app.png)
 
 ## Image Classification Model
 
@@ -110,7 +110,7 @@ Before training our model on this dataset, it's always a good idea to plot the i
 data.show_batch(2, figsize=(4, 4))
 ```
 
-![png]({{ site.url }}/assets/img/2020–03-29-image-classification-web-app-using-fastai_21_0.png)
+![png](https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_21_0.png)
 
 Everything seems to be working out nicely!
 
@@ -155,12 +155,9 @@ Min numerical gradient: 3.02E-03
 Min loss divided by 10: 3.02E-02
 ```
 
-
-![png]({{ site.url }}/assets/img/2020–03-29-image-classification-web-app-using-fastai_27_2.png)
-
+![png](https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_27_2.png)
 
 Our model doesn't need to train for many epochs for us to asses its performance. We train our model for 6 epochs using the suggested learning rate. It's performing okay. Make sure to also save this trained model, we don't want to lose it!
-
 
 ```python
 lr = 3.02E-03
@@ -276,7 +273,7 @@ Min numerical gradient: 7.59E-07
 Min loss divided by 10: 2.29E-05
 ```
 
-![png]({{ site.url }}/assets/img/2020–03-29-image-classification-web-app-using-fastai_32_2.png)
+![png](https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_32_2.png)
 
 We now train the unfrozen model for 6 more epochs, 12 epochs in total. Also, make sure to save the second training stage of our model.
 
@@ -509,11 +506,11 @@ If an image file is uploaded and submitted,  we want to display the prediction r
 
 We're now ready to upload our own image and see what our models predict this clothing item is. I will test our app by uploading this photo of my sneakers.
 
-![jpg]({{ site.url }}/assets/img/2020–03-29-image-classification-web-app-using-fastai_sample_image.jpeg)
+![jpg](https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_sample_image.jpeg)
 
 Let's make a prediction using our web app. The model predicts that these are "sports shoes", which is correct. The image below shows our web app without any additional styling.
 
-![png]({{ site.url }}/assets/img/2020–03-29-image-classification-web-app-using-fastai_simple_app.png)
+![png](https://maxscheijen.github.io/assets/img/2020–03-29-image-classification-web-app-using-fastai_simple_app.png)
 
 We now have a fully functional web app that can predict fashion items from an image. To make the app look like the example at the start of the post, you need to add some additional HTML and some CSS.
 

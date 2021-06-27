@@ -19,11 +19,11 @@ Most of the analysis focuses on the differences between article features based o
 
 The first thing to look at is the article count over time between 2010 and 2020. To get a less stochastic article count, I decided to group them by months over time. From 2010 to the middle of 2016, the monthly article count increased from around 1000 to a little more than 2000. After 2016 we see a downwards trend in the number of monthly articles published to 1100 in 2020.
 
-![png]({{ site.url }}/assets/img/nos_analysis_blog_files/nos_analysis_blog_9_0.png)
+![png](https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_9_0.png)
 
 More interesting is probably to look at the change of monthly article count when we split the articles based on category. If we look at the absolute count over time, we see the same trend as the overall article count. This is most likely caused by the "Binnenland" (domestic) and the "Buitenland" (foreign) categories, which display the same tends.
 
-![png]({{ site.url }}/assets/img/nos_analysis_blog_files/nos_analysis_blog_11_0.png)
+![png](https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_11_0.png)
 
 Therefore I choose to normalize the counts based on category. The second graph shows the share of a news category in the total number of articles in a specific month. For example, there is a large bump in the domestic news share (and drop in foreign news) in the first quarter of 2020 caused by the initial Coronavirus outbreak. In contrast, most of 2011, the foreign news articles were most prevalent, probably caused by the start of the <a href="https://en.wikipedia.org/wiki/Arab_Spring" target="_blank">Arabic Spring</a>, the <a href="https://en.wikipedia.org/wiki/Killing_of_Osama_bin_Laden" target="_blank"> capture of Osama Binladen</a>, and the <a href="https://en.wikipedia.org/wiki/2011_Norway_attacks" target="_blank">terrorist attacks in Norway</a>.
 
@@ -33,11 +33,11 @@ The word count of an article can be an indicator of the quality of the news arti
 
 Let us first look at the overall word count of all the articles published by the NOS. As expected, the word count of the article is heavily right-skewed (when used for modeling probably better to use the log). Also, the word count of the title is more normally distributed, which is expected.
 
-![png]({{ site.url }}/assets/img/nos_analysis_blog_files/nos_analysis_blog_15_0.png)
+![png](https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_15_0.png)
 
 Tech and Culture & Media have the highest median word count. This makes sense to me. These articles are often less time-dependent. Meaning that their publishing is less dependent on the daily news cycle. They are still relevant at a later moment than political news. This suggests that writers have more time to write these articles, can incorporate more detail, leading to longer pieces. The "remarkable" and "regional news" category have the lowest median news count. This is expected most of these articles report small news events, leading to shorter pieces.
 
-![png]({{ site.url }}/assets/img/nos_analysis_blog_files/nos_analysis_blog_18_0.png)
+![png](https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_18_0.png)
 
 ## Readability
 
@@ -105,23 +105,23 @@ Another important of a news article is how easy it is to read. Readability measu
 
 The articles categorized as Foreign, Politics, Tech, and Economy are the heardest to read with a readability score below 60, which is about 10th to 12th-grade-level reading.  So somewhat hard to read.  Categories "remarkable news", "regional news" and "culture & media" are easier to read with a score above 60. However, the overall median scores are not that different across categories.
 
-![png]({{ site.url }}/assets/img/nos_analysis_blog_files/nos_analysis_blog_22_0.png)
+![png](https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_22_0.png)
 
 ## Sentiment, Polarity, and Subjectivity
 
 Let us look at the sentiment of the texts. Are they positive or negative? Furthermore, we can also analyze the texts for subjectivity. When looking at all the articles together, we see that most of the news articles are neutral in their polarity. Most of the articles hover somewhere in the middle between subjective and objective in their subjectivity measure.
 
-![png]({{ site.url }}/assets/img/nos_analysis_blog_files/nos_analysis_blog_26_0.png)
+![png](https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_26_0.png)
 
 Even if we parse the articles by news category we do not see many differences in the distributions of polarity and subjectivity scores.
 
-![png]({{ site.url }}/assets/img/nos_analysis_blog_files/nos_analysis_blog_28_0.png)
+![png](https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_28_0.png)
 
 ## Informative words
 
 We can use TF-IDF, short for term frequency-inverse document frequency, to extract the most informative words out of every article. TF-IDF  is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus. In this case, I removed stop words, because most of the time they don't contain any useful information. Also, I ignore terms that appear in less than 0.5% of the documents. Let's see if what the most informative terms are in the news articles in every category.
 
-![png]({{ site.url }}/assets/img/nos_analysis_blog_files/nos_analysis_blog_35_0.png)
+![png](https://maxscheijen.github.io/assets/img/nos_analysis_blog_files/nos_analysis_blog_35_0.png)
 
 The TF-IDF result is pretty interesting. For example, we can see that the most informative terms (translated to English) in articles categorized as politics are: chamber, cabinet, minister, political parties (VVD, PvdA, CDA, D66), member of parliament, and secretary of state. All words that are associated with politics. The most informative terms in the economic news articles are also associated with the economy. For example, percent, Euro, company, billion, banks, and money. In the Royal Family category, we see that the words King, Queen, Prince, Princess, Willem (the king's first name) are all highly informative.
 
